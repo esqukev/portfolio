@@ -6,16 +6,8 @@ import { gsap } from "gsap";
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
 export default function Home() {
-  const [scrollY, setScrollY] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,8 +16,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const navOpacity = scrollY < 30 ? 0 : Math.min(1, (scrollY - 30) / 100);
-  const navBlurOpacity = scrollY < 30 ? 0.3 : Math.min(0.95, 0.3 + (scrollY - 30) / 150);
 
   useEffect(() => {
     if (wordRef.current) {
@@ -106,17 +96,11 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
       {/* Floating Nav - sticky at top, appears on scroll */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
-        <div
-          className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out"
-          style={{
-            opacity: navOpacity,
-            pointerEvents: navOpacity > 0.5 ? "auto" : "none",
-          }}
-        >
+        <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
         <nav
           className="rounded-2xl border-none overflow-hidden transition-all duration-500"
           style={{
-            background: `rgba(245,245,245,${navBlurOpacity})`,
+            background: "rgba(245,245,245,0.95)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
