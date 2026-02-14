@@ -14,10 +14,234 @@ const DRAW_SVG_VARIANTS = [
   `<path d="M5 29.8857C52.3147 26.9322 99.4329 21.6611 146.503 17.1765C151.753 16.6763 157.115 15.9505 162.415 15.6551C163.28 15.6069 165.074 15.4123 164.383 16.4275C161.704 20.3627 157.134 23.7551 153.95 27.4983C153.209 28.3702 148.194 33.4751 150.669 34.6605C153.638 36.0819 163.621 32.6063 165.039 32.2029C178.55 28.3608 191.49 23.5968 204.869 19.5404C231.903 11.3436 259.347 5.83254 288.793 5.12258C294.094 4.99476 299.722 4.82265 305 5.45025" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
 ];
 
+function horizontalLoop(
+  items: HTMLElement[],
+  config: {
+    paused?: boolean;
+    draggable?: boolean;
+    center?: boolean | Element;
+    repeat?: number;
+    speed?: number;
+    snap?: boolean | number;
+    paddingRight?: string;
+    reversed?: boolean;
+    onChange?: (element: HTMLElement, index: number) => void;
+  }
+) {
+  items = gsap.utils.toArray(items);
+  config = config || {};
+  const onChange = config.onChange;
+  let lastIndex = 0;
+  const tl = gsap.timeline({
+    repeat: config.repeat,
+    onUpdate: onChange
+      ? function () {
+          const i = tl.closestIndex();
+          if (lastIndex !== i) {
+            lastIndex = i;
+            onChange!(items[i], i);
+          }
+        }
+      : undefined,
+    paused: config.paused,
+    defaults: { ease: "none" },
+    onReverseComplete: () => {
+      tl.totalTime(tl.rawTime() + tl.duration() * 100);
+    },
+  });
+  const length = items.length;
+  const startX = items[0].offsetLeft;
+  const times: number[] = [];
+  const widths: number[] = [];
+  const spaceBefore: number[] = [];
+  const xPercents: number[] = [];
+  let curIndex = 0;
+  const snap = config.snap === false ? (v: number) => v : gsap.utils.snap(typeof config.snap === "number" ? config.snap : 1);
+  const container = config.center === true ? items[0].parentNode as HTMLElement : (Array.isArray(config.center) ? config.center[0] : config.center) || (items[0].parentNode as HTMLElement);
+  let totalWidth: number;
+  const getTotalWidth = () =>
+    items[length - 1].offsetLeft +
+    (xPercents[length - 1] / 100) * widths[length - 1] -
+    startX +
+    spaceBefore[0] +
+    items[length - 1].offsetWidth * (gsap.getProperty(items[length - 1], "scaleX") as number) +
+    (parseFloat(config.paddingRight || "0") || 0);
+  const pixelsPerSecond = (config.speed || 1) * 100;
+
+  const populateWidths = () => {
+    let b1 = container.getBoundingClientRect();
+    items.forEach((el, i) => {
+      widths[i] = parseFloat(gsap.getProperty(el, "width", "px") as string);
+      xPercents[i] = snap((parseFloat(gsap.getProperty(el, "x", "px") as string) / widths[i]) * 100 + (gsap.getProperty(el, "xPercent") as number));
+      const b2 = el.getBoundingClientRect();
+      spaceBefore[i] = b2.left - (i ? b1.right : b1.left);
+      b1 = b2;
+    });
+    gsap.set(items, { xPercent: (i) => xPercents[i] });
+    totalWidth = getTotalWidth();
+  };
+
+  let timeOffset = 0;
+  let timeWrap: (t: number) => number;
+
+  const populateOffsets = () => {
+    timeOffset = config.center ? (tl.duration() * (container.offsetWidth / 2)) / totalWidth : 0;
+    if (config.center) {
+      times.forEach((t, i) => {
+        times[i] = timeWrap(tl.labels["label" + i] + (tl.duration() * widths[i]) / 2 / totalWidth - timeOffset);
+      });
+    }
+  };
+
+  const getClosest = (values: number[], value: number, wrap: number) => {
+    let i = values.length;
+    let closest = 1e10;
+    let index = 0;
+    while (i--) {
+      let d = Math.abs(values[i] - value);
+      if (d > wrap / 2) d = wrap - d;
+      if (d < closest) {
+        closest = d;
+        index = i;
+      }
+    }
+    return index;
+  };
+
+  const populateTimeline = () => {
+    tl.clear();
+    for (let i = 0; i < length; i++) {
+      const item = items[i];
+      const curX = (xPercents[i] / 100) * widths[i];
+      const distanceToStart = item.offsetLeft + curX - startX + spaceBefore[0];
+      const distanceToLoop = distanceToStart + widths[i] * (gsap.getProperty(item, "scaleX") as number);
+      tl.to(
+        item,
+        { xPercent: snap(((curX - distanceToLoop) / widths[i]) * 100), duration: distanceToLoop / pixelsPerSecond },
+        0
+      )
+        .fromTo(
+          item,
+          { xPercent: snap(((curX - distanceToLoop + totalWidth) / widths[i]) * 100) },
+          { xPercent: xPercents[i], duration: (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond, immediateRender: false },
+          distanceToLoop / pixelsPerSecond
+        )
+        .add("label" + i, distanceToStart / pixelsPerSecond);
+      times[i] = distanceToStart / pixelsPerSecond;
+    }
+    timeWrap = gsap.utils.wrap(0, tl.duration());
+  };
+
+  const refresh = (deep?: boolean) => {
+    const progress = tl.progress();
+    tl.progress(0, true);
+    populateWidths();
+    if (deep) populateTimeline();
+    populateOffsets();
+    if (deep && (tl as gsap.core.Timeline & { draggable?: unknown }).draggable) {
+      tl.time(times[curIndex], true);
+    } else {
+      tl.progress(progress, true);
+    }
+  };
+
+  const onResize = () => refresh(true);
+  window.addEventListener("resize", onResize);
+  let proxy: HTMLDivElement;
+
+  gsap.set(items, { x: 0 });
+  populateWidths();
+  populateTimeline();
+  populateOffsets();
+
+  function toIndex(index: number, vars?: gsap.TweenVars) {
+    vars = vars || {};
+    if (Math.abs(index - curIndex) > length / 2) index += index > curIndex ? -length : length;
+    const newIndex = gsap.utils.wrap(0, length, index);
+    let time = times[newIndex];
+    if (time > tl.time() !== index > curIndex && index !== curIndex) time += tl.duration() * (index > curIndex ? 1 : -1);
+    if (time < 0 || time > tl.duration()) (vars as Record<string, unknown>).modifiers = { time: timeWrap };
+    curIndex = newIndex;
+    (vars as Record<string, unknown>).overwrite = true;
+    gsap.killTweensOf(proxy);
+    return (vars as Record<string, unknown>).duration === 0 ? tl.time(timeWrap(time)) : tl.tweenTo(time, vars);
+  }
+
+  tl.toIndex = (index: number, vars?: gsap.TweenVars) => toIndex(index, vars);
+  tl.closestIndex = (setCurrent?: boolean) => {
+    const index = getClosest(times, tl.time(), tl.duration());
+    if (setCurrent) {
+      curIndex = index;
+    }
+    return index;
+  };
+  tl.current = () => curIndex;
+  tl.next = (vars?: gsap.TweenVars) => toIndex(tl.current() + 1, vars);
+  tl.previous = (vars?: gsap.TweenVars) => toIndex(tl.current() - 1, vars);
+  tl.times = times;
+  tl.progress(1, true).progress(0, true);
+
+  if (config.reversed) {
+    tl.vars?.onReverseComplete?.();
+    tl.reverse();
+  }
+
+  if (config.draggable && typeof Draggable !== "undefined") {
+    proxy = document.createElement("div");
+    const wrap = gsap.utils.wrap(0, 1);
+    let ratio: number, startProgress: number, lastSnap: number, initChangeX: number;
+    const syncIndex = () => tl.closestIndex(true);
+    const instance = Draggable.create(proxy, {
+      trigger: items[0].parentNode as HTMLElement,
+      type: "x",
+      onPressInit(this: { x: number }) {
+        const x = this.x;
+        gsap.killTweensOf(tl);
+        tl.pause();
+        startProgress = tl.progress();
+        refresh();
+        ratio = 1 / totalWidth;
+        initChangeX = startProgress / -ratio - x;
+        gsap.set(proxy, { x: startProgress / -ratio });
+      },
+      onDrag(this: { startX: number; x: number }) {
+        tl.progress(wrap(startProgress + (this.startX - this.x) * ratio));
+      },
+      onThrowUpdate(this: { startX: number; x: number }) {
+        tl.progress(wrap(startProgress + (this.startX - this.x) * ratio));
+      },
+      overshootTolerance: 0,
+      inertia: true,
+      snap(this: { x: number }, value: number) {
+        if (Math.abs(startProgress / -ratio - this.x) < 10) return lastSnap + initChangeX;
+        const time = -(value * ratio) * tl.duration();
+        const wrappedTime = timeWrap(time);
+        const snapTime = times[getClosest(times, wrappedTime, tl.duration())];
+        let dif = snapTime - wrappedTime;
+        if (Math.abs(dif) > tl.duration() / 2) dif += dif < 0 ? tl.duration() : -tl.duration();
+        lastSnap = (time + dif) / tl.duration() / -ratio;
+        return lastSnap;
+      },
+      onRelease: syncIndex,
+      onThrowComplete: syncIndex,
+    })[0];
+    (tl as gsap.core.Timeline & { draggable?: unknown }).draggable = instance;
+  }
+
+  tl.closestIndex(true);
+  lastIndex = curIndex;
+  if (onChange) onChange(items[curIndex], curIndex);
+
+  return tl;
+}
+
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
   const drawLineRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const aboutRef = useRef<HTMLElement>(null);
+  const sliderListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -110,6 +334,90 @@ export default function Home() {
     };
   }, []);
 
+  // Projects slider (horizontal loop, prev/next + click)
+  useEffect(() => {
+    const list = sliderListRef.current;
+    if (!list) return;
+
+    const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
+    const nextBtn = document.querySelector("[data-slider-next]");
+    const prevBtn = document.querySelector("[data-slider-prev]");
+    const totalEl = document.querySelector("[data-slider-total]");
+    const stepEl = document.querySelector("[data-slider-step]");
+    const stepsParent = stepEl?.parentElement;
+
+    let activeElement: HTMLElement | null = null;
+    const totalSlides = slides.length;
+
+    if (totalEl) totalEl.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
+    if (stepsParent && stepEl) {
+      stepsParent.innerHTML = "";
+      slides.forEach((_, i) => {
+        const clone = stepEl.cloneNode(true) as HTMLElement;
+        clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
+        stepsParent.appendChild(clone);
+      });
+    }
+    const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
+
+    const mq = window.matchMedia("(min-width: 992px)");
+    let useNextForActive = mq.matches;
+    mq.addEventListener("change", (e) => {
+      useNextForActive = e.matches;
+      if (currentEl) applyActive(currentEl, currentIndex, false);
+    });
+
+    let currentEl: HTMLElement | null = null;
+    let currentIndex = 0;
+
+    const resolveActive = (el: HTMLElement) => (useNextForActive ? (el.nextElementSibling as HTMLElement) || slides[0] : el);
+
+    const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
+      if (activeElement) activeElement.classList.remove("active");
+      const target = resolveActive(el);
+      target.classList.add("active");
+      activeElement = target;
+      if (allSteps.length && animateNumbers) {
+        gsap.to(allSteps, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
+      } else if (allSteps.length) {
+        gsap.set(allSteps, { y: `${-100 * index}%` });
+      }
+    };
+
+    const loop = horizontalLoop(slides, {
+      paused: true,
+      draggable: false,
+      center: true,
+      onChange: (el, index) => {
+        currentEl = el;
+        currentIndex = index;
+        applyActive(el, index, true);
+      },
+    });
+
+    const mapClickIndex = (i: number) => (useNextForActive ? i - 1 : i);
+    slides.forEach((slide, i) => {
+      slide.addEventListener("click", () => {
+        if (slide.classList.contains("active")) return;
+        loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
+      });
+    });
+
+    nextBtn?.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 }));
+    prevBtn?.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 }));
+
+    if (!currentEl && slides[0]) {
+      currentEl = slides[0];
+      currentIndex = 0;
+      applyActive(currentEl, currentIndex, false);
+    }
+
+    return () => {
+      nextBtn?.removeEventListener("click", () => {});
+      prevBtn?.removeEventListener("click", () => {});
+    };
+  }, []);
+
   const projects = [
     {
       id: 1,
@@ -180,14 +488,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Asterisk - right edge, coming out of screen */}
+      {/* Asterisk - right edge, scrolls with page */}
       <div
-        className="fixed right-0 top-1/2 z-0 pointer-events-none select-none"
+        className="absolute right-0 top-1/2 z-0 pointer-events-none select-none"
         style={{
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
           color: "rgba(0,0,0,0.08)",
-          transform: "translate(calc(50% - 14px), calc(-50% + 200px)) rotate(-22deg)",
+          transform: "translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-22deg)",
           lineHeight: 1,
         }}
       >
@@ -251,11 +559,24 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section id="home" className="pt-40 pb-32 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative">
+        {/* Decorative line from word to asterisk circle (diffuses toward circle) */}
+        <div className="absolute left-0 right-0 top-0 bottom-0 pointer-events-none overflow-hidden">
+          <svg className="absolute w-full h-[600px]" style={{ top: "55%", left: "20%", width: "60%", height: "70vh" }} viewBox="0 0 400 600" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%" stopColor="rgb(216, 180, 254)" stopOpacity="0.6" />
+                <stop offset="70%" stopColor="rgb(216, 180, 254)" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="rgb(216, 180, 254)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M 80 20 Q 200 200 200 400 T 200 580" stroke="url(#lineGrad)" strokeWidth="2" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+        <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.95] tracking-tight text-[#0a0a0a] animate-fade-in">
             Web{" "}
-            <span ref={wordRef} className="inline-block overflow-visible">
+            <span ref={wordRef} className="inline-block overflow-visible hero-word-diffuse">
               {ROTATING_WORDS[wordIndex]}
             </span>
           </h1>
@@ -286,7 +607,7 @@ export default function Home() {
       </section>
 
       {/* About - centered, large text, fade-in */}
-      <section id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
+      <section ref={aboutRef} id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
         {/* Rotating asterisk ring - behind text */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-[480px] h-[480px] flex items-center justify-center">
@@ -346,43 +667,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-24 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">Projects</h2>
-          <p className="text-[#737373] text-sm uppercase tracking-widest mb-10">What I&apos;ve built</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {projects.map((project) => (
-              <div key={project.id} className="osmo-card rounded-2xl overflow-hidden group">
-                <div className="h-48 bg-[#171717] flex items-center justify-center relative overflow-hidden">
-                  <span className="text-white text-2xl font-bold">{project.title}</span>
+      {/* Projects Section - Draggable Slider */}
+      <section id="projects" className="py-24 px-0 lg:px-8">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 px-6 lg:px-0 max-w-6xl mx-auto">Projects</h2>
+        <p className="text-[#737373] text-sm uppercase tracking-widest mb-10 px-6 lg:px-0 max-w-6xl mx-auto">What I&apos;ve built</p>
+        <div className="slider__section">
+          <div className="slider__overlay">
+            <div className="slider__overlay-inner">
+              <div className="slider__overlay-count">
+                <div className="slider__count-col">
+                  <h2 data-slider-step className="slider__count-heading">01</h2>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#0a0a0a] mb-3">{project.title}</h3>
-                  <p className="text-[#525252] text-sm mb-4 leading-relaxed">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2.5 py-1 text-xs text-[#525252] rounded-md border border-[#e5e5e5] bg-[#fafafa]"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-6">
-                    {project.link && project.link !== '#' && (
-                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[#0a0a0a] hover:underline">
-                        Live Demo →
-                      </a>
-                    )}
-                    <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[#0a0a0a] hover:underline">
-                      GitHub →
-                    </a>
-                  </div>
+                <div className="slider__count-divider" />
+                <div className="slider__count-col">
+                  <h2 data-slider-total className="slider__count-heading">00</h2>
                 </div>
               </div>
-            ))}
+              <div className="slider__overlay-nav">
+                <button type="button" aria-label="previous slide" data-slider-prev className="slider__btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow">
+                    <path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" />
+                  </svg>
+                  <div className="slider__btn-overlay">
+                    <div className="slider__btn-overlay-corner" />
+                    <div className="slider__btn-overlay-corner top-right" />
+                    <div className="slider__btn-overlay-corner bottom-left" />
+                    <div className="slider__btn-overlay-corner bottom-right" />
+                  </div>
+                </button>
+                <button type="button" aria-label="next slide" data-slider-next className="slider__btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next">
+                    <path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" />
+                  </svg>
+                  <div className="slider__btn-overlay">
+                    <div className="slider__btn-overlay-corner" />
+                    <div className="slider__btn-overlay-corner top-right" />
+                    <div className="slider__btn-overlay-corner bottom-left" />
+                    <div className="slider__btn-overlay-corner bottom-right" />
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="slider__main">
+            <div className="slider__wrap">
+              <div ref={sliderListRef} data-slider="list" className="slider__list">
+                {projects.map((project, idx) => (
+                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 1 ? "active" : ""}`}>
+                    <div className="slider__slide-inner">
+                      <a href={(project.link && project.link !== "#") ? project.link : project.github} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                        <div className="slide__img-wrap slide__img-placeholder">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
+                          <span className="slide__img-fallback hidden">{project.title}</span>
+                        </div>
+                      </a>
+                      <div className="slide__caption">
+                        <div className="slide__caption-dot" />
+                        <p className="slide__caption-label">{project.title}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
