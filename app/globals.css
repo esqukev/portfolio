@@ -368,12 +368,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   overflow: visible !important;
 }
 
-/* Word diffuses toward asterisk circle */
-.hero-word-diffuse {
-  mask-image: linear-gradient(to bottom, black 75%, rgba(0,0,0,0.4) 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 75%, rgba(0,0,0,0.4) 95%, transparent 100%);
-}
-
 /* Right asterisk - hover effect */
 .asterisk-right {
   color: #000;
@@ -673,6 +667,22 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 [data-slider-slide].active .slide__caption {
   transition-delay: 0.3s;
+}
+
+/* Project info card - smooth transition on slide change */
+.project-info-card {
+  animation: projectInfoFade 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes projectInfoFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media screen and (max-width: 991px) {

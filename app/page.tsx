@@ -237,6 +237,7 @@ function horizontalLoop(
 
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
   const drawLineRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
@@ -392,6 +393,7 @@ export default function Home() {
         currentEl = el;
         currentIndex = index;
         applyActive(el, index, true);
+        setActiveProjectIndex(index);
       },
     });
 
@@ -488,9 +490,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Asterisk - right edge, scrolls with page, hover effect */}
+      {/* Asterisk - right edge, fixed in first banner, hover effect */}
       <div
-        className="asterisk-right absolute right-0 top-1/2 z-0 select-none"
+        className="asterisk-right fixed right-0 top-1/2 z-0 select-none"
         style={{
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
@@ -558,23 +560,10 @@ export default function Home() {
 
       {/* Hero Section */}
       <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative">
-        {/* Decorative line from word to asterisk circle (diffuses toward circle) */}
-        <div className="absolute left-0 right-0 top-0 bottom-0 pointer-events-none overflow-hidden">
-          <svg className="absolute w-full h-[600px]" style={{ top: "55%", left: "20%", width: "60%", height: "70vh" }} viewBox="0 0 400 600" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="50%" y2="100%">
-                <stop offset="0%" stopColor="rgb(216, 180, 254)" stopOpacity="0.6" />
-                <stop offset="70%" stopColor="rgb(216, 180, 254)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="rgb(216, 180, 254)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d="M 80 20 Q 200 200 200 400 T 200 580" stroke="url(#lineGrad)" strokeWidth="2" fill="none" strokeLinecap="round" />
-          </svg>
-        </div>
         <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.95] tracking-tight text-[#0a0a0a] animate-fade-in">
             Web{" "}
-            <span ref={wordRef} className="inline-block overflow-visible hero-word-diffuse">
+            <span ref={wordRef} className="inline-block overflow-visible">
               {ROTATING_WORDS[wordIndex]}
             </span>
           </h1>
@@ -728,6 +717,50 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+        {/* Floating project info - syncs with active slide */}
+        <div className="max-w-6xl mx-auto mt-12 px-6 lg:px-0">
+          <div
+            key={activeProjectIndex}
+            className="project-info-card osmo-card rounded-2xl p-6 lg:p-8"
+          >
+            <h3 className="text-xl font-bold text-[#0a0a0a] mb-3">
+              {projects[activeProjectIndex]?.title}
+            </h3>
+            <p className="text-[#525252] text-sm mb-4 leading-relaxed">
+              {projects[activeProjectIndex]?.description}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {projects[activeProjectIndex]?.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-2.5 py-1 text-xs text-[#525252] rounded-md border border-[#e5e5e5] bg-[#fafafa]"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-6">
+              {projects[activeProjectIndex]?.link && projects[activeProjectIndex].link !== "#" && (
+                <a
+                  href={projects[activeProjectIndex].link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-[#0a0a0a] hover:underline"
+                >
+                  Live Demo →
+                </a>
+              )}
+              <a
+                href={projects[activeProjectIndex]?.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-[#0a0a0a] hover:underline"
+              >
+                GitHub →
+              </a>
             </div>
           </div>
         </div>
