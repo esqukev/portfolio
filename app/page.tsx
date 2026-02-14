@@ -130,7 +130,7 @@ export default function Home() {
             ))}
           </div>
         </nav>
-        {/* Animated strip - seamless infinite */}
+        {/* Animated strip - infinite billboard, seamless */}
         <div
           className="mt-1 rounded-2xl overflow-hidden border-none"
           style={{
@@ -138,9 +138,12 @@ export default function Home() {
           }}
         >
           <div className="py-2.5 overflow-hidden">
-            <div className="flex animate-marquee-seamless">
-              <span className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap pr-8">EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * </span>
-              <span className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap pr-8">EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * </span>
+            <div className="flex w-max animate-marquee-seamless gap-0">
+              {[1, 2].map((i) => (
+                <span key={i} className="flex-shrink-0 text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap">
+                  EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -181,12 +184,12 @@ export default function Home() {
 
       {/* About - centered, large text, fade-in */}
       <section id="about" className="py-24 px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-6 animate-fade-in-slow">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-5 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-tight animate-fade-in-slow delay-200">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight animate-fade-in-slow delay-200">
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
           </p>

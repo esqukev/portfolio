@@ -202,17 +202,16 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 @keyframes marquee-seamless {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .animate-marquee-seamless {
   animation: marquee-seamless 25s linear infinite;
-  display: flex;
-  width: max-content;
+  will-change: transform;
 }
 
 @keyframes orbit-slow {
