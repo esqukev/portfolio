@@ -227,6 +227,19 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   animation: orbit-slow 12s linear infinite;
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 18s linear infinite;
+}
+
 @keyframes slide-left {
   from {
     opacity: 0;

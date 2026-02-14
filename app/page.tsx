@@ -106,12 +106,12 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
       {/* Asterisk - right edge, coming out of screen */}
       <div
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none"
+        className="fixed right-0 top-1/2 z-0 pointer-events-none select-none"
         style={{
           fontFamily: "var(--font-leckerli-one), cursive",
-          fontSize: "400px",
+          fontSize: "1200px",
           color: "rgba(0,0,0,0.08)",
-          transform: "translate(50%, -50%)",
+          transform: "translate(calc(50% - 30px), calc(-50% + 200px)) rotate(-8deg)",
           lineHeight: 1,
         }}
       >
@@ -205,8 +205,31 @@ export default function Home() {
       </section>
 
       {/* About - centered, large text, fade-in */}
-      <section id="about" className="py-24 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto text-center">
+      <section id="about" className="py-24 px-6 lg:px-8 relative">
+        {/* Rotating asterisk ring - behind text */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="relative w-[320px] h-[320px] flex items-center justify-center">
+            <div className="absolute inset-0 animate-spin-slow">
+              {Array.from({ length: 18 }).map((_, i) => {
+                const angle = (360 / 18) * i;
+                return (
+                  <span
+                    key={i}
+                    className="absolute left-1/2 top-1/2 text-2xl font-bold"
+                    style={{
+                      color: "rgba(216, 180, 254, 0.4)",
+                      transform: `rotate(${angle}deg) translateY(-150px) rotate(-${angle}deg)`,
+                      fontFamily: "var(--font-leckerli-one), cursive",
+                    }}
+                  >
+                    *
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto text-center relative z-10">
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-5 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
