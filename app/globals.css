@@ -240,6 +240,45 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   animation: spin-slow 18s linear infinite;
 }
 
+@keyframes spin-ultra {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-ultra {
+  animation: spin-ultra 16s linear infinite;
+}
+
+.marquee-text {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding-right: 3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  color: rgba(107, 33, 168, 0.9);
+}
+
+@keyframes marquee-strip {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-strip {
+  display: flex;
+  width: max-content;
+  animation: marquee-strip 14s linear infinite;
+  will-change: transform;
+}
+
 @keyframes slide-left {
   from {
     opacity: 0;

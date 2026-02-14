@@ -111,7 +111,7 @@ export default function Home() {
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
           color: "rgba(0,0,0,0.08)",
-          transform: "translate(calc(50% - 22px), calc(-50% + 200px)) rotate(-22deg)",
+          transform: "translate(calc(50% - 14px), calc(-50% + 200px)) rotate(-22deg)",
           lineHeight: 1,
         }}
       >
@@ -152,20 +152,22 @@ export default function Home() {
             ))}
           </div>
         </nav>
-        {/* Animated strip - infinite billboard, seamless */}
-        <div
-          className="mt-1 rounded-2xl overflow-hidden border-none"
-          style={{
-            background: "linear-gradient(90deg, #e9d5ff 0%, #d8b4fe 50%, #e9d5ff 100%)",
-          }}
-        >
-          <div className="py-2.5 overflow-hidden">
-            <div className="flex w-max animate-marquee-seamless gap-0">
-              {[1, 2].map((i) => (
-                <span key={i} className="flex-shrink-0 text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap">
-                  EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
-                </span>
-              ))}
+        {/* Animated strip - Apple style with fade edges */}
+        <div className="relative mt-1 rounded-2xl overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(90deg, #e9d5ff 0%, #d8b4fe 50%, #e9d5ff 100%)",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 z-10">
+            <div className="absolute left-0 top-0 h-full w-20 bg-gradient-to-r from-[#e9d5ff] to-transparent" />
+            <div className="absolute right-0 top-0 h-full w-20 bg-gradient-to-l from-[#e9d5ff] to-transparent" />
+          </div>
+          <div className="relative z-0 py-2.5 overflow-hidden">
+            <div className="flex w-max animate-marquee-strip">
+              <span className="marquee-text">EXPLORE • DESIGN • CREATE • IMAGINE • ELEVATE •</span>
+              <span className="marquee-text">EXPLORE • DESIGN • CREATE • IMAGINE • ELEVATE •</span>
             </div>
           </div>
         </div>
@@ -204,21 +206,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About - centered, large text, fade-in */}
-      <section id="about" className="py-24 px-6 lg:px-8 relative">
-        {/* Rotating asterisk ring - behind text */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="relative w-[480px] h-[480px] flex items-center justify-center">
-            <div className="absolute inset-0 animate-spin-slow">
-              {Array.from({ length: 18 }).map((_, i) => {
-                const angle = (360 / 18) * i;
+      {/* About - centered, large text, fade-in. Circle sticks out above, text lower */}
+      <section id="about" className="pt-0 pb-24 px-6 lg:px-8 relative">
+        {/* Rotating asterisk ring - positioned to stick out into hero area */}
+        <div className="absolute -top-48 left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none w-full">
+          <div className="relative w-[420px] h-[420px] flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full blur-3xl opacity-20 bg-[#d8b4fe]/30" />
+            <div className="absolute inset-0 animate-spin-ultra">
+              {Array.from({ length: 20 }).map((_, i) => {
+                const angle = (360 / 20) * i;
+                const scale = 0.9 + (i % 3) * 0.15;
+                const opacity = 0.6 + (i % 4) * 0.1;
                 return (
                   <span
                     key={i}
-                    className="absolute left-1/2 top-1/2 text-8xl font-extrabold"
+                    className="absolute left-1/2 top-1/2 font-black text-[58px] tracking-tight select-none"
                     style={{
+                      transform: `rotate(${angle}deg) translateY(-185px) rotate(-${angle}deg) scale(${scale})`,
+                      opacity,
                       color: "rgb(216, 180, 254)",
-                      transform: `rotate(${angle}deg) translateY(-220px) rotate(-${angle}deg)`,
+                      textShadow: "0px 0px 20px rgba(216,180,254,0.3), 0px 0px 40px rgba(216,180,254,0.15)",
+                      WebkitTextStroke: "2px rgba(216,180,254,0.8)",
                       fontFamily: "var(--font-leckerli-one), cursive",
                     }}
                   >
@@ -229,7 +237,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto text-center relative z-10">
+        <div className="max-w-6xl mx-auto text-center relative z-10 pt-64">
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-5 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
