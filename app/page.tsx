@@ -46,6 +46,15 @@ export default function Home() {
     },
     {
       id: 2,
+      title: "Brand Presentation",
+      description: "Immersive visual experiences — crafting tailored visuals that push the boundaries of your vision.",
+      technologies: ["Next.js", "TypeScript", "CSS", "Tailwind", "React", "GSAP", "Lenis", "Open Graph"],
+      image: "/project-2.jpg",
+      link: "https://www.planb-fx.com/",
+      github: "https://github.com/esqukev/planbfx-final-site",
+    },
+    {
+      id: 3,
       title: "Auction",
       description: "A complete website for auctioning collection items focused on back end.",
       technologies: ["Html", "CSS", "Javascript", "API", "Postman", "JSON"],
@@ -54,7 +63,7 @@ export default function Home() {
       github: "https://github.com/esqukev/auction.git",
     },
     {
-      id: 3,
+      id: 4,
       title: "Weather Dashboard",
       description: "Beautiful weather application with location-based forecasts and interactive charts.",
       technologies: ["Vue.js", "Chart.js", "OpenWeather API", "CSS3"],
@@ -63,7 +72,7 @@ export default function Home() {
       github: "#",
     },
     {
-      id: 4,
+      id: 5,
       title: "Social Media Analytics",
       description: "Analytics dashboard for tracking social media performance with data visualization.",
       technologies: ["Next.js", "Python", "PostgreSQL", "D3.js", "TypeScript"],
@@ -94,7 +103,20 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
+    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
+      {/* Asterisk - right edge, coming out of screen */}
+      <div
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none"
+        style={{
+          fontFamily: "var(--font-leckerli-one), cursive",
+          fontSize: "400px",
+          color: "rgba(0,0,0,0.08)",
+          transform: "translate(50%, -50%)",
+          lineHeight: 1,
+        }}
+      >
+        *
+      </div>
       {/* Nav - sticky at top */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
         <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
