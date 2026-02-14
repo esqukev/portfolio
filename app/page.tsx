@@ -420,6 +420,60 @@ export default function Home() {
     };
   }, []);
 
+  // Looping words for skills
+  useEffect(() => {
+    const wordList = document.querySelector("[data-looping-words-list]");
+    const edgeElement = document.querySelector("[data-looping-words-selector]");
+    if (!wordList || !edgeElement) return;
+
+    const words = Array.from(wordList.children);
+    const totalWords = words.length;
+    if (totalWords === 0) return;
+
+    const wordHeight = 100 / totalWords;
+    let currentIndex = 0;
+
+    const updateEdgeWidth = () => {
+      const centerIndex = (currentIndex + 1) % totalWords;
+      const centerWord = words[centerIndex] as HTMLElement;
+      const centerWordWidth = centerWord.getBoundingClientRect().width;
+      const listWidth = (wordList as HTMLElement).getBoundingClientRect().width;
+      const percentageWidth = listWidth > 0 ? (centerWordWidth / listWidth) * 100 : 100;
+
+      gsap.to(edgeElement, {
+        width: `${percentageWidth}%`,
+        duration: 0.5,
+        ease: "expo.out",
+      });
+    };
+
+    const moveWords = () => {
+      currentIndex++;
+
+      gsap.to(wordList, {
+        yPercent: -wordHeight * currentIndex,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.85)",
+        onStart: updateEdgeWidth,
+        onComplete: () => {
+          if (currentIndex >= totalWords - 3) {
+            wordList.appendChild(wordList.children[0]);
+            currentIndex--;
+            gsap.set(wordList, { yPercent: -wordHeight * currentIndex });
+            words.push(words.shift()!);
+          }
+        },
+      });
+    };
+
+    updateEdgeWidth();
+
+    const tl = gsap.timeline({ repeat: -1, delay: 1 });
+    tl.call(moveWords).to({}, { duration: 2 }).repeat(-1);
+
+    return () => { tl.kill(); };
+  }, []);
+
   const projects = [
     {
       id: 1,
@@ -490,16 +544,18 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Asterisk - right edge, fixed in first banner, hover effect */}
-      <div
-        className="asterisk-right fixed right-0 top-1/2 z-0 select-none"
-        style={{
-          fontFamily: "var(--font-leckerli-one), cursive",
-          fontSize: "1200px",
-          lineHeight: 1,
-        }}
-      >
-        *
+      {/* Asterisk - right edge, fixed, hover zone for effect at top */}
+      <div className="asterisk-hover-zone fixed right-0 top-0 bottom-0 w-32 z-[25] select-none" aria-hidden>
+        <div
+          className="asterisk-right"
+          style={{
+            fontFamily: "var(--font-leckerli-one), cursive",
+            fontSize: "1200px",
+            lineHeight: 1,
+          }}
+        >
+          *
+        </div>
       </div>
       {/* Nav - sticky at top */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
@@ -630,37 +686,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Skills Section */}
+      {/* Skills Section - Looping words */}
       <section id="skills" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">Skills</h2>
-          <p className="text-[#737373] text-sm uppercase tracking-widest mb-10">What I work with</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {skills.map((skill) => (
-              <div key={skill.name} className="osmo-card rounded-xl p-6">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-medium text-[#0a0a0a]">{skill.name}</span>
-                  <span className="text-sm font-semibold text-[#525252]">{skill.level}%</span>
-                </div>
-                <div className="w-full h-1.5 bg-[#e5e5e5] rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#0a0a0a] transition-all duration-1000"
-                    style={{ width: `${skill.level}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 text-center">Skills</h2>
+          <p className="text-[#737373] text-sm uppercase tracking-widest mb-10 text-center">What I work with</p>
+          <div className="looping-words">
+            <div className="looping-words__containers">
+              <ul data-looping-words-list className="looping-words__list">
+                {skills.map((skill) => (
+                  <li key={skill.name} className="looping-words__item">
+                    <p className="looping-words__p">{skill.name}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="looping-words__fade" />
+            <div data-looping-words-selector className="looping-words__selector">
+              <div className="looping-words__edge" />
+              <div className="looping-words__edge is--2" />
+              <div className="looping-words__edge is--3" />
+              <div className="looping-words__edge is--4" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Projects Section - Draggable Slider */}
       <section id="projects" className="py-24 px-0 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 px-6 lg:px-0 max-w-6xl mx-auto">Projects</h2>
-        <p className="text-[#737373] text-sm uppercase tracking-widest mb-10 px-6 lg:px-0 max-w-6xl mx-auto">What I&apos;ve built</p>
         <div className="slider__section">
           <div className="slider__overlay">
             <div className="slider__overlay-inner">
+              <div className="slider__overlay-header">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-1">Projects</h2>
+                <p className="text-[#737373] text-sm uppercase tracking-widest">What I&apos;ve built</p>
+              </div>
               <div className="slider__overlay-count">
                 <div className="slider__count-col">
                   <h2 data-slider-step className="slider__count-heading">01</h2>
@@ -724,7 +784,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto mt-12 px-6 lg:px-0">
           <div
             key={activeProjectIndex}
-            className="project-info-card osmo-card rounded-2xl p-6 lg:p-8"
+            className="project-info-floating"
           >
             <h3 className="text-xl font-bold text-[#0a0a0a] mb-3">
               {projects[activeProjectIndex]?.title}
@@ -732,16 +792,9 @@ export default function Home() {
             <p className="text-[#525252] text-sm mb-4 leading-relaxed">
               {projects[activeProjectIndex]?.description}
             </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {projects[activeProjectIndex]?.technologies.map((tech) => (
-                <span
-                  key={tech}
-                  className="px-2.5 py-1 text-xs text-[#525252] rounded-md border border-[#e5e5e5] bg-[#fafafa]"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
+            <p className="text-[#525252] text-sm mb-4">
+              {projects[activeProjectIndex]?.technologies.join(" · ")}
+            </p>
             <div className="flex gap-6">
               {projects[activeProjectIndex]?.link && projects[activeProjectIndex].link !== "#" && (
                 <a

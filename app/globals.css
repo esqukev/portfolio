@@ -368,18 +368,26 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   overflow: visible !important;
 }
 
-/* Right asterisk - hover effect */
+/* Right asterisk - hover zone (right edge) + effect */
+.asterisk-hover-zone {
+  pointer-events: auto;
+  cursor: default;
+}
+
+.asterisk-hover-zone:hover .asterisk-right {
+  opacity: 0.16;
+  transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
+}
+
 .asterisk-right {
   color: #000;
   opacity: 0.08;
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-22deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.asterisk-right:hover {
-  opacity: 0.16;
-  transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
+  position: absolute;
+  right: 0;
+  top: 50%;
 }
 
 /* Projects Slider - adapted from draggable horizontal loop */
@@ -669,9 +677,125 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Project info card - smooth transition on slide change */
-.project-info-card {
+/* Looping words - Skills */
+.looping-words {
+  height: 2.7em;
+  padding-left: 0.1em;
+  padding-right: 0.1em;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  line-height: 0.9;
+  position: relative;
+  color: #0a0a0a;
+}
+
+.looping-words__list {
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-flow: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  position: relative;
+}
+
+.looping-words__item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.looping-words__fade {
+  pointer-events: none;
+  background-image: linear-gradient(
+    #f5f5f5 5%,
+    rgba(245, 245, 245, 0) 40%,
+    rgba(245, 245, 245, 0) 60%,
+    #f5f5f5 95%
+  );
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.looping-words__edge {
+  border-top: 0.035em solid #d8b4fe;
+  border-left: 0.035em solid #d8b4fe;
+  width: 0.125em;
+  height: 0.125em;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.looping-words__edge.is--2 {
+  left: auto;
+  right: 0;
+  transform: rotate(90deg);
+}
+
+.looping-words__edge.is--3 {
+  inset: auto 0 0 auto;
+  transform: rotate(180deg);
+}
+
+.looping-words__edge.is--4 {
+  top: auto;
+  bottom: 0;
+  transform: rotate(270deg);
+}
+
+.looping-words__selector {
+  pointer-events: none;
+  width: 100%;
+  height: 0.9em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.looping-words__containers {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.looping-words__p {
+  margin: 0;
+}
+
+/* Slider overlay header - Projects above 01/05 */
+.slider__overlay-header {
+  margin-bottom: 0.5rem;
+}
+
+/* Project info - floating text, no card */
+.project-info-floating {
   animation: projectInfoFade 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.project-info-floating h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.project-info-floating p {
+  margin-bottom: 1rem;
+  color: #525252;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.project-info-floating .flex.gap-6 a {
+  font-size: 0.875rem;
 }
 
 @keyframes projectInfoFade {
