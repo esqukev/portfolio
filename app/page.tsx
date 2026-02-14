@@ -99,7 +99,7 @@ export default function Home() {
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
         <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
         <nav
-          className="rounded-2xl border-none overflow-hidden transition-all duration-500 bg-[#0a0a0a]"
+          className="rounded-2xl border-none overflow-hidden transition-all duration-500 bg-[#000]"
           style={{
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
@@ -179,28 +179,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section divider - animated circle */}
-      <div className="py-16 flex justify-center">
-        <div className="relative w-48 h-48 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border-2 border-[#e5e5e5] animate-orbit-slow" />
-          <div className="absolute inset-4 rounded-full border border-[#d4d4d4]/60 animate-orbit-slow" style={{ animationDirection: "reverse", animationDuration: "8s" }} />
-          <span className="text-sm font-medium text-[#737373] uppercase tracking-widest relative z-10">Skills & Projects</span>
-        </div>
-      </div>
-
       {/* About - centered, large text, fade-in */}
       <section id="about" className="py-24 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug mb-6 animate-fade-in-slow">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-6 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug mb-6 animate-fade-in-slow delay-200">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-tight animate-fade-in-slow delay-200">
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
-          </p>
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug animate-fade-in-slow delay-400">
-            When I&apos;m not coding, you can find me exploring new frameworks, visual design, or sharing knowledge with the developer community.
           </p>
         </div>
       </section>
