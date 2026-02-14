@@ -6,16 +6,8 @@ import { gsap } from "gsap";
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
 export default function Home() {
-  const [scrollY, setScrollY] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,14 +20,18 @@ export default function Home() {
     if (wordRef.current) {
       gsap.fromTo(
         wordRef.current,
-        { y: -40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "bounce.out" }
+        { y: -80, opacity: 0, scale: 0.8 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.9,
+          ease: "elastic.out(1, 0.5)",
+        }
       );
     }
   }, [wordIndex]);
 
-  const navOpacity = scrollY < 30 ? 0 : Math.min(1, (scrollY - 30) / 100);
-  const navBlurOpacity = scrollY < 30 ? 0.3 : Math.min(0.95, 0.3 + (scrollY - 30) / 150);
   const projects = [
     {
       id: 1,
@@ -97,24 +93,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
-      {/* Floating Nav - appears on scroll */}
-      <div
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[min(90%,42rem)] transition-all duration-500 ease-out"
-        style={{
-          opacity: navOpacity,
-          pointerEvents: navOpacity > 0.5 ? "auto" : "none",
-        }}
-      >
-        <nav
-          className="rounded-2xl border-none overflow-hidden transition-all duration-500"
-          style={{
-            background: `rgba(245,245,245,${navBlurOpacity})`,
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-          }}
-        >
-          <div className="flex justify-center items-center h-14 px-6">
+      {/* Sticky Nav - top */}
+      <header className="sticky top-0 z-50 w-full bg-[#f5f5f5]/95 backdrop-blur-xl border-b border-[#e5e5e5]">
+        <nav className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-center items-center h-14">
             <div className="flex items-center gap-8">
               {["About", "Skills", "Projects", "Contact"].map((item) => (
                 <a
@@ -130,7 +112,7 @@ export default function Home() {
         </nav>
         {/* Animated strip */}
         <div
-          className="mt-1 rounded-2xl overflow-hidden border-none"
+          className="overflow-hidden"
           style={{
             background: "linear-gradient(90deg, #e9d5ff 0%, #d8b4fe 50%, #e9d5ff 100%)",
           }}
@@ -141,7 +123,7 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Hero Section */}
       <section id="home" className="pt-40 pb-32 px-6 lg:px-8">
@@ -153,10 +135,10 @@ export default function Home() {
             </span>
           </h1>
           <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#525252] animate-fade-in delay-200">
-            Built to Flex
+            Innovative Design
           </h2>
           <p className="mt-8 max-w-xl text-lg text-[#737373] leading-relaxed animate-fade-in delay-200">
-            I create beautiful, functional web experiences. Full-stack development with modern technologies.
+            I create bold, modern web experiences that look insane and perform even better — full-stack development with cutting-edge tech.
           </p>
           <div className="mt-12 flex gap-4 animate-fade-in delay-400">
             <a
