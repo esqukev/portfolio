@@ -111,7 +111,7 @@ export default function Home() {
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
           color: "rgba(0,0,0,0.08)",
-          transform: "translate(calc(50% - 30px), calc(-50% + 200px)) rotate(-15deg)",
+          transform: "translate(calc(50% - 22px), calc(-50% + 200px)) rotate(-22deg)",
           lineHeight: 1,
         }}
       >
@@ -215,9 +215,9 @@ export default function Home() {
                 return (
                   <span
                     key={i}
-                    className="absolute left-1/2 top-1/2 text-3xl font-extrabold"
+                    className="absolute left-1/2 top-1/2 text-8xl font-extrabold"
                     style={{
-                      color: "rgba(216, 180, 254, 0.65)",
+                      color: "rgb(216, 180, 254)",
                       transform: `rotate(${angle}deg) translateY(-220px) rotate(-${angle}deg)`,
                       fontFamily: "var(--font-leckerli-one), cursive",
                     }}
