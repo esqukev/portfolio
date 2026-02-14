@@ -25,6 +25,7 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
@@ -350,7 +351,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   font-size: 0.9em;
   font-weight: 700;
   line-height: 1.1;
-  color: #525252;
+  color: var(--muted);
   letter-spacing: -0.02em;
 }
 
@@ -368,7 +369,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   overflow: visible !important;
 }
 
-/* Right asterisk - hover zone (right edge) + effect */
+/* Right asterisk - sticky + hover zone */
 .asterisk-hover-zone {
   pointer-events: auto;
   cursor: default;
@@ -387,7 +388,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   right: 0;
-  top: 50%;
+  top: 0;
 }
 
 /* Projects Slider - adapted from draggable horizontal loop */
@@ -561,6 +562,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   font-size: 1em;
   font-weight: 400;
   line-height: 1;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .slider__count-divider {
@@ -776,25 +778,28 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   margin-bottom: 0.5rem;
 }
 
-/* Project info - floating text, no card */
+/* Project info - floating text, same color as hero paragraph (#737373) */
 .project-info-floating {
   animation: projectInfoFade 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  color: var(--muted);
 }
 
 .project-info-floating h3 {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: var(--muted);
 }
 
 .project-info-floating p {
   margin-bottom: 1rem;
-  color: #525252;
+  color: var(--muted);
   font-size: 0.875rem;
   line-height: 1.6;
 }
 
 .project-info-floating .flex.gap-6 a {
+  color: var(--muted);
   font-size: 0.875rem;
 }
 

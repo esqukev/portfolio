@@ -268,7 +268,7 @@ export default function Home() {
     }
   }, [wordIndex]);
 
-  // Draw underline effect on hover (stroke-dashoffset, no paid plugin)
+  // Draw underline effect on hover + every 4s (stroke-dashoffset, no paid plugin)
   useEffect(() => {
     const container = drawLineRef.current?.closest("[data-draw-line]");
     const box = drawLineRef.current;
@@ -325,9 +325,21 @@ export default function Home() {
       }
     };
 
+    const runCycle = () => {
+      onEnter();
+      gsap.delayedCall(2, () => {
+        onLeave();
+      });
+    };
+
     container.addEventListener("mouseenter", onEnter);
     container.addEventListener("mouseleave", onLeave);
+
+    const interval = setInterval(runCycle, 4000);
+    gsap.delayedCall(0.5, runCycle);
+
     return () => {
+      clearInterval(interval);
       container.removeEventListener("mouseenter", onEnter);
       container.removeEventListener("mouseleave", onLeave);
       enterTween?.kill();
@@ -544,19 +556,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Asterisk - right edge, fixed, hover zone for effect at top */}
-      <div className="asterisk-hover-zone fixed right-0 top-0 bottom-0 w-32 z-[25] select-none" aria-hidden>
-        <div
-          className="asterisk-right"
-          style={{
-            fontFamily: "var(--font-leckerli-one), cursive",
-            fontSize: "1200px",
-            lineHeight: 1,
-          }}
-        >
-          *
-        </div>
-      </div>
+      <div className="flex w-full">
+        <div className="flex-1 min-w-0">
       {/* Nav - sticky at top */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
         <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
@@ -862,6 +863,21 @@ export default function Home() {
           </p>
         </div>
       </footer>
+        </div>
+      {/* Asterisk - right edge, sticky, hover zone */}
+      <div className="asterisk-hover-zone sticky top-[50%] w-32 flex-shrink-0 z-[25] select-none self-start" aria-hidden style={{ marginTop: "-50vh" }}>
+        <div
+          className="asterisk-right"
+          style={{
+            fontFamily: "var(--font-leckerli-one), cursive",
+            fontSize: "1200px",
+            lineHeight: 1,
+          }}
+        >
+          *
+        </div>
+      </div>
+      </div>
     </main>
   );
 }
