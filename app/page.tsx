@@ -93,7 +93,12 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
+    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
+      {/* Rotating circle - half on edge */}
+      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 pointer-events-none w-32 h-32 md:w-40 md:h-40 translate-x-1/2">
+        <div className="w-full h-full rounded-full border-2 border-[#e5e5e5]/60 animate-spin-slow" />
+        <div className="absolute inset-0 rounded-full border border-[#d4d4d4]/40 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "8s" }} />
+      </div>
       {/* Floating Nav - sticky at top, appears on scroll */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
         <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
@@ -120,7 +125,7 @@ export default function Home() {
             </div>
           </div>
         </nav>
-        {/* Animated strip */}
+        {/* Animated strip - infinite */}
         <div
           className="mt-1 rounded-2xl overflow-hidden border-none"
           style={{
@@ -128,9 +133,13 @@ export default function Home() {
           }}
         >
           <div className="py-2.5 overflow-hidden">
-            <p className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap animate-marquee">
-              EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
-            </p>
+            <div className="flex animate-marquee-infinite whitespace-nowrap">
+              {Array(8).fill("EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * ").map((text, i) => (
+                <span key={i} className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] pr-4">
+                  {text}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
         </div>
