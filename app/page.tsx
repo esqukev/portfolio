@@ -6,8 +6,16 @@ import { gsap } from "gsap";
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
 export default function Home() {
+  const [scrollY, setScrollY] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -15,6 +23,9 @@ export default function Home() {
     }, 2000);
     return () => clearInterval(timer);
   }, []);
+
+  const navOpacity = scrollY < 30 ? 0 : Math.min(1, (scrollY - 30) / 100);
+  const navBlurOpacity = scrollY < 30 ? 0.3 : Math.min(0.95, 0.3 + (scrollY - 30) / 150);
 
   useEffect(() => {
     if (wordRef.current) {
@@ -93,10 +104,25 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
-      {/* Sticky Nav - top */}
-      <header className="sticky top-0 z-50 w-full bg-[#f5f5f5]/95 backdrop-blur-xl border-b border-[#e5e5e5]">
-        <nav className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-center items-center h-14">
+      {/* Floating Nav - sticky at top, appears on scroll */}
+      <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
+        <div
+          className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out"
+          style={{
+            opacity: navOpacity,
+            pointerEvents: navOpacity > 0.5 ? "auto" : "none",
+          }}
+        >
+        <nav
+          className="rounded-2xl border-none overflow-hidden transition-all duration-500"
+          style={{
+            background: `rgba(245,245,245,${navBlurOpacity})`,
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex justify-center items-center h-14 px-6">
             <div className="flex items-center gap-8">
               {["About", "Skills", "Projects", "Contact"].map((item) => (
                 <a
@@ -112,7 +138,7 @@ export default function Home() {
         </nav>
         {/* Animated strip */}
         <div
-          className="overflow-hidden"
+          className="mt-1 rounded-2xl overflow-hidden border-none"
           style={{
             background: "linear-gradient(90deg, #e9d5ff 0%, #d8b4fe 50%, #e9d5ff 100%)",
           }}
@@ -123,7 +149,8 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </header>
+        </div>
+      </div>
 
       {/* Hero Section */}
       <section id="home" className="pt-40 pb-32 px-6 lg:px-8">
