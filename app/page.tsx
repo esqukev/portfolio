@@ -111,7 +111,7 @@ export default function Home() {
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
           color: "rgba(0,0,0,0.08)",
-          transform: "translate(calc(50% - 30px), calc(-50% + 200px)) rotate(-8deg)",
+          transform: "translate(calc(50% - 30px), calc(-50% + 200px)) rotate(-15deg)",
           lineHeight: 1,
         }}
       >
@@ -208,17 +208,17 @@ export default function Home() {
       <section id="about" className="py-24 px-6 lg:px-8 relative">
         {/* Rotating asterisk ring - behind text */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="relative w-[320px] h-[320px] flex items-center justify-center">
+          <div className="relative w-[480px] h-[480px] flex items-center justify-center">
             <div className="absolute inset-0 animate-spin-slow">
               {Array.from({ length: 18 }).map((_, i) => {
                 const angle = (360 / 18) * i;
                 return (
                   <span
                     key={i}
-                    className="absolute left-1/2 top-1/2 text-2xl font-bold"
+                    className="absolute left-1/2 top-1/2 text-3xl font-extrabold"
                     style={{
-                      color: "rgba(216, 180, 254, 0.4)",
-                      transform: `rotate(${angle}deg) translateY(-150px) rotate(-${angle}deg)`,
+                      color: "rgba(216, 180, 254, 0.65)",
+                      transform: `rotate(${angle}deg) translateY(-220px) rotate(-${angle}deg)`,
                       fontFamily: "var(--font-leckerli-one), cursive",
                     }}
                   >
