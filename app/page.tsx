@@ -6,9 +6,18 @@ import { gsap } from "gsap";
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
+const DRAW_SVG_VARIANTS = [
+  `<path d="M5 20.9999C26.7762 16.2245 49.5532 11.5572 71.7979 14.6666C84.9553 16.5057 97.0392 21.8432 109.987 24.3888C116.413 25.6523 123.012 25.5143 129.042 22.6388C135.981 19.3303 142.586 15.1422 150.092 13.3333C156.799 11.7168 161.702 14.6225 167.887 16.8333C181.562 21.7212 194.975 22.6234 209.252 21.3888C224.678 20.0548 239.912 17.991 255.42 18.3055C272.027 18.6422 288.409 18.867 305 17.9999" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
+  `<path d="M5 24.2592C26.233 20.2879 47.7083 16.9968 69.135 13.8421C98.0469 9.5853 128.407 4.02322 158.059 5.14674C172.583 5.69708 187.686 8.66104 201.598 11.9696C207.232 13.3093 215.437 14.9471 220.137 18.3619C224.401 21.4596 220.737 25.6575 217.184 27.6168C208.309 32.5097 197.199 34.281 186.698 34.8486C183.159 35.0399 147.197 36.2657 155.105 26.5837C158.11 22.9053 162.993 20.6229 167.764 18.7924C178.386 14.7164 190.115 12.1115 201.624 10.3984C218.367 7.90626 235.528 7.06127 252.521 7.49276C258.455 7.64343 264.389 7.92791 270.295 8.41825C280.321 9.25056 296 10.8932 305 13.0242" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
+  `<path d="M4.99805 20.9998C65.6267 17.4649 126.268 13.845 187.208 12.8887C226.483 12.2723 265.751 13.2796 304.998 13.9998" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
+  `<path d="M5 29.5014C9.61174 24.4515 12.9521 17.9873 20.9532 17.5292C23.7742 17.3676 27.0987 17.7897 29.6575 19.0014C33.2644 20.7093 35.6481 24.0004 39.4178 25.5014C48.3911 29.0744 55.7503 25.7731 63.3048 21.0292C67.9902 18.0869 73.7668 16.1366 79.3721 17.8903C85.1682 19.7036 88.2173 26.2464 94.4121 27.2514C102.584 28.5771 107.023 25.5064 113.276 20.6125C119.927 15.4067 128.83 12.3333 137.249 15.0014C141.418 16.3225 143.116 18.7528 146.581 21.0014C149.621 22.9736 152.78 23.6197 156.284 24.2514C165.142 25.8479 172.315 17.5185 179.144 13.5014C184.459 10.3746 191.785 8.74853 195.868 14.5292C199.252 19.3205 205.597 22.9057 211.621 22.5014C215.553 22.2374 220.183 17.8356 222.979 15.5569C225.4 13.5845 227.457 11.1105 230.742 10.5292C232.718 10.1794 234.784 12.9691 236.164 14.0014C238.543 15.7801 240.717 18.4775 243.356 19.8903C249.488 23.1729 255.706 21.2551 261.079 18.0014C266.571 14.6754 270.439 11.5202 277.146 13.6125C280.725 14.7289 283.221 17.209 286.393 19.0014C292.321 22.3517 298.255 22.5014 305 22.5014" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
+  `<path d="M5 29.8857C52.3147 26.9322 99.4329 21.6611 146.503 17.1765C151.753 16.6763 157.115 15.9505 162.415 15.6551C163.28 15.6069 165.074 15.4123 164.383 16.4275C161.704 20.3627 157.134 23.7551 153.95 27.4983C153.209 28.3702 148.194 33.4751 150.669 34.6605C153.638 36.0819 163.621 32.6063 165.039 32.2029C178.55 28.3608 191.49 23.5968 204.869 19.5404C231.903 11.3436 259.347 5.83254 288.793 5.12258C294.094 4.99476 299.722 4.82265 305 5.45025" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
+];
+
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
   const wordRef = useRef<HTMLSpanElement>(null);
+  const drawLineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -33,6 +42,73 @@ export default function Home() {
       );
     }
   }, [wordIndex]);
+
+  // Draw underline effect on hover (stroke-dashoffset, no paid plugin)
+  useEffect(() => {
+    const container = drawLineRef.current?.closest("[data-draw-line]");
+    const box = drawLineRef.current;
+    if (!container || !box) return;
+
+    let nextIndex = 0;
+    let enterTween: gsap.core.Tween | null = null;
+    let leaveTween: gsap.core.Tween | null = null;
+
+    const onEnter = () => {
+      if (enterTween?.isActive()) return;
+      leaveTween?.kill();
+
+      const svgPath = DRAW_SVG_VARIANTS[nextIndex % DRAW_SVG_VARIANTS.length];
+      box.innerHTML = `<svg width="310" height="40" viewBox="0 0 310 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">${svgPath}</svg>`;
+      const path = box.querySelector("path");
+      if (!path) return;
+
+      const len = (path as SVGPathElement).getTotalLength();
+      path.setAttribute("stroke", "currentColor");
+      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+
+      enterTween = gsap.to(path, {
+        strokeDashoffset: 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+        onComplete: () => { enterTween = null; },
+      });
+      nextIndex++;
+    };
+
+    const onLeave = () => {
+      const path = box.querySelector("path");
+      if (!path) return;
+
+      const playOut = () => {
+        if (leaveTween?.isActive()) return;
+        const len = (path as SVGPathElement).getTotalLength();
+        leaveTween = gsap.to(path, {
+          strokeDashoffset: len,
+          duration: 0.5,
+          ease: "power2.inOut",
+          onComplete: () => {
+            leaveTween = null;
+            box.innerHTML = "";
+          },
+        });
+      };
+
+      if (enterTween?.isActive()) {
+        enterTween.eventCallback("onComplete", playOut);
+      } else {
+        playOut();
+      }
+    };
+
+    container.addEventListener("mouseenter", onEnter);
+    container.addEventListener("mouseleave", onLeave);
+    return () => {
+      container.removeEventListener("mouseenter", onEnter);
+      container.removeEventListener("mouseleave", onLeave);
+      enterTween?.kill();
+      leaveTween?.kill();
+    };
+  }, []);
 
   const projects = [
     {
@@ -183,8 +259,11 @@ export default function Home() {
               {ROTATING_WORDS[wordIndex]}
             </span>
           </h1>
-          <h2 className="mt-6 text-3xl md:text-4xl font-bold tracking-tight text-[#525252] animate-slide-left">
-            Innovative Design
+          <h2 className="mt-6 animate-slide-left">
+            <span data-draw-line className="text-draw inline-block cursor-default">
+              <span className="text-draw__span">Innovative Design</span>
+              <div ref={drawLineRef} data-draw-line-box className="text-draw__box" />
+            </span>
           </h2>
           <p className="mt-8 max-w-xl text-xl md:text-2xl text-[#737373] leading-relaxed animate-slide-left delay-100">
             I create bold, modern web experiences that look insane and perform even better — full-stack development with cutting-edge tech.
@@ -206,27 +285,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About - centered, large text, fade-in. Circle sticks out above, text lower */}
-      <section id="about" className="pt-0 pb-24 px-6 lg:px-8 relative">
-        {/* Rotating asterisk ring - positioned to stick out into hero area */}
-        <div className="absolute -top-48 left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none w-full">
-          <div className="relative w-[420px] h-[420px] flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full blur-3xl opacity-20 bg-[#d8b4fe]/30" />
-            <div className="absolute inset-0 animate-spin-ultra">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const angle = (360 / 20) * i;
-                const scale = 0.9 + (i % 3) * 0.15;
-                const opacity = 0.6 + (i % 4) * 0.1;
+      {/* About - centered, large text, fade-in */}
+      <section id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
+        {/* Rotating asterisk ring - behind text */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="relative w-[480px] h-[480px] flex items-center justify-center">
+            <div className="absolute inset-0 animate-spin-slow">
+              {Array.from({ length: 18 }).map((_, i) => {
+                const angle = (360 / 18) * i;
                 return (
                   <span
                     key={i}
-                    className="absolute left-1/2 top-1/2 font-black text-[58px] tracking-tight select-none"
+                    className="absolute left-1/2 top-1/2 text-8xl font-extrabold"
                     style={{
-                      transform: `rotate(${angle}deg) translateY(-185px) rotate(-${angle}deg) scale(${scale})`,
-                      opacity,
                       color: "rgb(216, 180, 254)",
-                      textShadow: "0px 0px 20px rgba(216,180,254,0.3), 0px 0px 40px rgba(216,180,254,0.15)",
-                      WebkitTextStroke: "2px rgba(216,180,254,0.8)",
+                      transform: `rotate(${angle}deg) translateY(-220px) rotate(-${angle}deg)`,
                       fontFamily: "var(--font-leckerli-one), cursive",
                     }}
                   >
@@ -237,7 +310,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto text-center relative z-10 pt-64">
+        <div className="max-w-6xl mx-auto text-center relative z-10">
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-5 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
