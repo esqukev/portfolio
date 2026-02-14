@@ -488,14 +488,12 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Asterisk - right edge, scrolls with page */}
+      {/* Asterisk - right edge, scrolls with page, hover effect */}
       <div
-        className="absolute right-0 top-1/2 z-0 pointer-events-none select-none"
+        className="asterisk-right absolute right-0 top-1/2 z-0 select-none"
         style={{
           fontFamily: "var(--font-leckerli-one), cursive",
           fontSize: "1200px",
-          color: "rgba(0,0,0,0.08)",
-          transform: "translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-22deg)",
           lineHeight: 1,
         }}
       >
