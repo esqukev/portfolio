@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Web Developer",
-  description: "Portfolio showcasing web development projects and skills",
+  title: "Kevin Bermudez | Portfolio",
+  description: "Web Developer & Designer portfolio - Kevin Bermudez",
 };
 
 export default function RootLayout({

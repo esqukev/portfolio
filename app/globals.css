@@ -182,6 +182,29 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  display: inline-block;
+}
+
+@keyframes strip-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 @keyframes sparkle-rotate {
   0% {
     opacity: 0;

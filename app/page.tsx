@@ -1,6 +1,41 @@
 "use client";
 
+import { useEffect, useState, useRef } from "react";
+import { gsap } from "gsap";
+
+const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
+
 export default function Home() {
+  const [scrollY, setScrollY] = useState(0);
+  const [wordIndex, setWordIndex] = useState(0);
+  const wordRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setWordIndex((i) => (i + 1) % ROTATING_WORDS.length);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (wordRef.current) {
+      gsap.fromTo(
+        wordRef.current,
+        { y: -40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "bounce.out" }
+      );
+    }
+  }, [wordIndex]);
+
+  const navOpacity = scrollY < 30 ? 0 : Math.min(1, (scrollY - 30) / 100);
+  const navBlurOpacity = scrollY < 30 ? 0.3 : Math.min(0.95, 0.3 + (scrollY - 30) / 150);
   const projects = [
     {
       id: 1,
@@ -62,15 +97,26 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
-      {/* Navigation - Osmo style */}
-      <nav className="fixed top-0 w-full z-50 bg-[#f5f5f5]/95 backdrop-blur-sm border-b border-[#e5e5e5]">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <a href="#home" className="text-lg font-semibold tracking-tight text-[#0a0a0a]">
-              KB
-            </a>
-            <div className="hidden md:flex items-center gap-8">
-              {['About', 'Skills', 'Projects', 'Contact'].map((item) => (
+      {/* Floating Nav - appears on scroll */}
+      <div
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[min(90%,42rem)] transition-all duration-500 ease-out"
+        style={{
+          opacity: navOpacity,
+          pointerEvents: navOpacity > 0.5 ? "auto" : "none",
+        }}
+      >
+        <nav
+          className="rounded-2xl border-none overflow-hidden transition-all duration-500"
+          style={{
+            background: `rgba(245,245,245,${navBlurOpacity})`,
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex justify-center items-center h-14 px-6">
+            <div className="flex items-center gap-8">
+              {["About", "Skills", "Projects", "Contact"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -81,16 +127,30 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </nav>
+        {/* Animated strip */}
+        <div
+          className="mt-1 rounded-2xl overflow-hidden border-none"
+          style={{
+            background: "linear-gradient(90deg, #e9d5ff 0%, #d8b4fe 50%, #e9d5ff 100%)",
+          }}
+        >
+          <div className="py-2.5 overflow-hidden">
+            <p className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap animate-marquee">
+              EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
+            </p>
+          </div>
         </div>
-      </nav>
+      </div>
 
-      {/* Hero Section - Osmo style */}
+      {/* Hero Section */}
       <section id="home" className="pt-40 pb-32 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.95] tracking-tight text-[#0a0a0a] animate-fade-in">
-            Web
-            <br />
-            Developer
+            Web{" "}
+            <span ref={wordRef} className="inline-block overflow-visible">
+              {ROTATING_WORDS[wordIndex]}
+            </span>
           </h1>
           <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#525252] animate-fade-in delay-200">
             Built to Flex
