@@ -93,22 +93,16 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      {/* Rotating circle - half on edge */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 pointer-events-none w-32 h-32 md:w-40 md:h-40 translate-x-1/2">
-        <div className="w-full h-full rounded-full border-2 border-[#e5e5e5]/60 animate-spin-slow" />
-        <div className="absolute inset-0 rounded-full border border-[#d4d4d4]/40 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "8s" }} />
-      </div>
-      {/* Floating Nav - sticky at top, appears on scroll */}
+    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a]">
+      {/* Nav - sticky at top */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
         <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
         <nav
-          className="rounded-2xl border-none overflow-hidden transition-all duration-500"
+          className="rounded-2xl border-none overflow-hidden transition-all duration-500 bg-[#0a0a0a]"
           style={{
-            background: "rgba(245,245,245,0.95)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
           }}
         >
           <div className="flex justify-center items-center h-14 px-6">
@@ -117,7 +111,7 @@ export default function Home() {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-sm text-[#525252] hover:text-[#0a0a0a] transition-colors"
+                  className="text-sm text-gray-300 hover:text-white transition-colors"
                 >
                   {item}
                 </a>
@@ -125,7 +119,7 @@ export default function Home() {
             </div>
           </div>
         </nav>
-        {/* Animated strip - infinite */}
+        {/* Animated strip */}
         <div
           className="mt-1 rounded-2xl overflow-hidden border-none"
           style={{
@@ -133,13 +127,9 @@ export default function Home() {
           }}
         >
           <div className="py-2.5 overflow-hidden">
-            <div className="flex animate-marquee-infinite whitespace-nowrap">
-              {Array(8).fill("EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * ").map((text, i) => (
-                <span key={i} className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] pr-4">
-                  {text}
-                </span>
-              ))}
-            </div>
+            <p className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap animate-marquee">
+              EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
+            </p>
           </div>
         </div>
         </div>
@@ -154,22 +144,22 @@ export default function Home() {
               {ROTATING_WORDS[wordIndex]}
             </span>
           </h1>
-          <h2 className="mt-6 text-3xl md:text-4xl font-semibold text-[#525252] animate-fade-in delay-200">
+          <h2 className="mt-6 text-3xl md:text-4xl font-bold tracking-tight text-[#525252] animate-slide-left">
             Innovative Design
           </h2>
-          <p className="mt-8 max-w-xl text-lg text-[#737373] leading-relaxed animate-fade-in delay-200">
+          <p className="mt-8 max-w-xl text-xl md:text-2xl text-[#737373] leading-relaxed animate-slide-left delay-100">
             I create bold, modern web experiences that look insane and perform even better — full-stack development with cutting-edge tech.
           </p>
           <div className="mt-12 flex gap-4 animate-fade-in delay-400">
             <a
               href="#projects"
-              className="inline-block px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-colors"
+              className="inline-block px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-all duration-300 ease-out"
             >
               View Work
             </a>
             <a
               href="#contact"
-              className="inline-block px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-colors"
+              className="inline-block px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
             >
               Get in Touch
             </a>
@@ -177,29 +167,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Section - Osmo style */}
-      <section id="about" className="py-24 px-6 lg:px-8 border-t border-[#e5e5e5]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">About</h2>
-          <p className="text-[#737373] text-sm uppercase tracking-widest mb-10">Who I am</p>
-          <div className="osmo-card rounded-2xl p-10 md:p-14">
-            <p className="text-lg text-[#525252] leading-relaxed mb-6">
-              I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
-              I love turning complex problems into simple, beautiful, and intuitive solutions.
-            </p>
-            <p className="text-lg text-[#525252] leading-relaxed mb-6">
-              With a strong foundation in front-end and back-end technologies, I enjoy creating
-              full-stack applications that deliver exceptional user experiences.
-            </p>
-            <p className="text-lg text-[#525252] leading-relaxed">
-              When I&apos;m not coding, you can find me exploring new frameworks, visual design, or sharing knowledge with the developer community.
-            </p>
-          </div>
+      {/* About - centered, large text, fade-in */}
+      <section id="about" className="py-24 px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed mb-8 animate-fade-in-slow">
+            I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
+            I love turning complex problems into simple, beautiful, and intuitive solutions.
+          </p>
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed mb-8 animate-fade-in-slow delay-200">
+            With a strong foundation in front-end and back-end technologies, I enjoy creating
+            full-stack applications that deliver exceptional user experiences.
+          </p>
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed animate-fade-in-slow delay-400">
+            When I&apos;m not coding, you can find me exploring new frameworks, visual design, or sharing knowledge with the developer community.
+          </p>
         </div>
       </section>
 
-      {/* Skills Section - Osmo style */}
-      <section id="skills" className="py-24 px-6 lg:px-8 border-t border-[#e5e5e5]">
+      {/* Skills Section */}
+      <section id="skills" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">Skills</h2>
           <p className="text-[#737373] text-sm uppercase tracking-widest mb-10">What I work with</p>
@@ -222,8 +208,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects Section - Osmo style */}
-      <section id="projects" className="py-24 px-6 lg:px-8 border-t border-[#e5e5e5]">
+      {/* Projects Section */}
+      <section id="projects" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">Projects</h2>
           <p className="text-[#737373] text-sm uppercase tracking-widest mb-10">What I&apos;ve built</p>
@@ -263,8 +249,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section - Osmo style */}
-      <section id="contact" className="py-24 px-6 lg:px-8 border-t border-[#e5e5e5]">
+      {/* Contact Section */}
+      <section id="contact" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4">Get in Touch</h2>
           <p className="text-[#737373] text-sm uppercase tracking-widest mb-4">Let&apos;s connect</p>
@@ -274,7 +260,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-4">
             <button
               onClick={handleSendEmail}
-              className="px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-colors"
+              className="px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-all duration-300 ease-out"
             >
               Send Email
             </button>
@@ -282,7 +268,7 @@ export default function Home() {
               href="https://github.com/esqukev"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-colors"
+              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
             >
               GitHub
             </a>
@@ -290,7 +276,7 @@ export default function Home() {
               href="https://www.linkedin.com/in/kevin-bermudez-831442241/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-colors"
+              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
             >
               LinkedIn
             </a>
@@ -298,8 +284,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer - Osmo style */}
-      <footer className="py-10 px-6 lg:px-8 border-t border-[#e5e5e5]">
+      {/* Footer */}
+      <footer className="py-10 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <p className="text-sm text-[#737373]">
             © {new Date().getFullYear()} Kevin Bermudez

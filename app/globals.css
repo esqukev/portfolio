@@ -44,6 +44,10 @@ body {
   animation: fade-in 1s ease-out;
 }
 
+.delay-100 {
+  animation-delay: 100ms;
+}
+
 .delay-200 {
   animation-delay: 200ms;
 }
@@ -196,30 +200,38 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   display: inline-block;
 }
 
-@keyframes marquee-infinite {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-12.5%);
-  }
-}
-
-.animate-marquee-infinite {
-  animation: marquee-infinite 30s linear infinite;
-}
-
-@keyframes spin-slow {
+@keyframes slide-left {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateX(-40px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-.animate-spin-slow {
-  animation: spin-slow 12s linear infinite;
+.animate-slide-left {
+  animation: slide-left 1s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+@keyframes fade-in-slow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-slow {
+  animation: fade-in-slow 2s ease-out forwards;
+  opacity: 0;
 }
 
 @keyframes strip-shift {
