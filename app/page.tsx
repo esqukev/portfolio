@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
@@ -105,21 +106,31 @@ export default function Home() {
             boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
           }}
         >
-          <div className="flex justify-center items-center h-14 px-6">
-            <div className="flex items-center gap-8">
-              {["About", "Skills", "Projects", "Contact"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-sm text-gray-300 hover:text-white transition-colors"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
+          <div className="flex justify-center items-center h-14 px-6 gap-8">
+            {["About", "Skills"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm font-bold text-gray-300 hover:text-white transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+            <a href="#home" className="flex-shrink-0 mx-2">
+              <Image src="/apple-touch-icon.png" alt="KB" width={32} height={32} className="object-contain" />
+            </a>
+            {["Projects", "Contact"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm font-bold text-gray-300 hover:text-white transition-colors"
+              >
+                {item}
+              </a>
+            ))}
           </div>
         </nav>
-        {/* Animated strip */}
+        {/* Animated strip - seamless infinite */}
         <div
           className="mt-1 rounded-2xl overflow-hidden border-none"
           style={{
@@ -127,9 +138,10 @@ export default function Home() {
           }}
         >
           <div className="py-2.5 overflow-hidden">
-            <p className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap animate-marquee">
-              EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE *{" "}
-            </p>
+            <div className="flex animate-marquee-seamless">
+              <span className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap pr-8">EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * </span>
+              <span className="text-sm font-medium text-[#6b21a8]/90 tracking-[0.3em] whitespace-nowrap pr-8">EXPLORE * DESIGN * CREATE * IMAGINE * ELEVATE * </span>
+            </div>
           </div>
         </div>
         </div>
@@ -167,18 +179,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Section divider - animated circle */}
+      <div className="py-16 flex justify-center">
+        <div className="relative w-48 h-48 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-2 border-[#e5e5e5] animate-orbit-slow" />
+          <div className="absolute inset-4 rounded-full border border-[#d4d4d4]/60 animate-orbit-slow" style={{ animationDirection: "reverse", animationDuration: "8s" }} />
+          <span className="text-sm font-medium text-[#737373] uppercase tracking-widest relative z-10">Skills & Projects</span>
+        </div>
+      </div>
+
       {/* About - centered, large text, fade-in */}
       <section id="about" className="py-24 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed mb-8 animate-fade-in-slow">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug mb-6 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed mb-8 animate-fade-in-slow delay-200">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug mb-6 animate-fade-in-slow delay-200">
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
           </p>
-          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-relaxed animate-fade-in-slow delay-400">
+          <p className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0a0a0a] leading-snug animate-fade-in-slow delay-400">
             When I&apos;m not coding, you can find me exploring new frameworks, visual design, or sharing knowledge with the developer community.
           </p>
         </div>

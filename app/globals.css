@@ -200,6 +200,34 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   display: inline-block;
 }
 
+@keyframes marquee-seamless {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-seamless {
+  animation: marquee-seamless 25s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+@keyframes orbit-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-orbit-slow {
+  animation: orbit-slow 12s linear infinite;
+}
+
 @keyframes slide-left {
   from {
     opacity: 0;
