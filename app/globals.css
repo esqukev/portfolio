@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f5f5;
+  --foreground: #0a0a0a;
+  --accent: #171717;
+  --muted: #737373;
+  --border: #e5e5e5;
 }
 
 @theme inline {
@@ -12,15 +15,184 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-1000 {
+  animation-delay: 1000ms;
+}
+
+.delay-2000 {
+  animation-delay: 2000ms;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.6;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-30px);
+    opacity: 0.4;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Ensure section titles always appear on top - force them into their own layer */
+section[style*="zIndex: 20"] > div > div:first-child,
+section[style*="z-index: 20"] > div > div:first-child {
+  position: relative !important;
+  z-index: 100 !important;
+  transform: translateZ(0) !important;
+  will-change: transform;
+  pointer-events: none;
+}
+
+section[style*="zIndex: 20"] > div > div:first-child h2,
+section[style*="z-index: 20"] > div > div:first-child h2,
+section[style*="zIndex: 20"] > div > div:first-child h1,
+section[style*="z-index: 20"] > div > div:first-child h1 {
+  position: relative !important;
+  z-index: 101 !important;
+  transform: translateZ(0) !important;
+  pointer-events: auto;
+}
+
+/* Custom scrollbar - Osmo style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e5e5e5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a3a3a3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+/* Osmo style - clean cards */
+.osmo-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  transition: all 0.25s ease;
+}
+
+.osmo-card:hover {
+  border-color: #a3a3a3;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes sparkle-rotate {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-30px) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(180deg) translateY(-40px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(360deg) translateY(-30px) scale(0);
+  }
 }
