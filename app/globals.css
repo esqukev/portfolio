@@ -855,11 +855,10 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     justify-content: center;
   }
 
-  /* Peek: slides un poco más estrechos para ver card entrante/saliente */
   .slider__slide {
-    width: min(75vw, 300px);
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    width: 85vw;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
     flex-shrink: 0;
   }
 
