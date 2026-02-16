@@ -121,7 +121,7 @@ export default function Home() {
     };
   }, []);
 
-  // Projects slider (horizontal loop, prev/next + click)
+// Projects slider (horizontal loop, prev/next + click)
 useEffect(() => {
   const list = sliderListRef.current;
   if (!list) return;
@@ -139,10 +139,12 @@ useEffect(() => {
   let activeElement: HTMLElement | null = null;
   const totalSlides = slides.length;
 
+  // Total counter 05
   [totalEl, totalElMobile].forEach((el) => {
     if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
   });
 
+  // Clone steps (01,02,03...)
   [stepEl, stepElMobile].forEach((sel) => {
     const parent = sel?.parentElement;
     if (parent && sel) {
@@ -162,7 +164,8 @@ useEffect(() => {
   let currentIndex = 0;
 
   const resolveActive = (el: HTMLElement) => el;
-  const displayIndex = (loopIndex: number) => loopIndex;
+
+  const displayIndex = (loopIndex: number) => (loopIndex + 2) % totalSlides;
 
   const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
     if (activeElement) activeElement.classList.remove("active");
@@ -198,34 +201,32 @@ useEffect(() => {
     },
   });
 
-  // ✅ Start centered on the middle slide (fix offset)
-  const startIndex = 1;
+  // ✅ FORCE correct initial state (slide 0 must be centered)
+  const startIndex = 0;
   loop.toIndex(startIndex, { duration: 0 });
-  applyActive(slides[startIndex], startIndex, false);
-  setActiveProjectIndex(displayIndex(startIndex));
+
   currentEl = slides[startIndex];
   currentIndex = startIndex;
 
-  const mapClickIndex = (i: number) => i;
+  applyActive(currentEl, currentIndex, false);
+  setActiveProjectIndex(displayIndex(currentIndex));
 
+  // Click slide to go to it
   slides.forEach((slide, i) => {
     slide.addEventListener("click", () => {
       if (slide.classList.contains("active")) return;
-      loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
+      loop.toIndex(i, { ease: "power3", duration: 0.725 });
     });
   });
 
-  nextBtns.forEach((btn) =>
-    btn.addEventListener("click", () =>
-      loop.next({ ease: "power3", duration: 0.725 })
-    )
-  );
+  // Buttons
+  nextBtns.forEach((btn) => {
+    btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 }));
+  });
 
-  prevBtns.forEach((btn) =>
-    btn.addEventListener("click", () =>
-      loop.previous({ ease: "power3", duration: 0.725 })
-    )
-  );
+  prevBtns.forEach((btn) => {
+    btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 }));
+  });
 
   // Mouse drag for desktop - use slider section for full area
   let dragCleanup: (() => void) | undefined;
@@ -247,6 +248,7 @@ useEffect(() => {
       startX = e.clientX;
       startProgress = loop.progress();
       isDragging = true;
+
       gsap.killTweensOf(loop);
 
       window.addEventListener("mousemove", onMouseMove);
@@ -262,8 +264,8 @@ useEffect(() => {
       if (totalWidth > 0) {
         const delta = -dx / totalWidth;
         let p = startProgress + delta;
-        p = Math.max(0, Math.min(1, p));
 
+        p = Math.max(0, Math.min(1, p));
         loop.progress(p);
 
         const idx = loop.closestIndex();
@@ -271,6 +273,7 @@ useEffect(() => {
         if (currentEl !== slides[idx]) {
           currentEl = slides[idx];
           currentIndex = idx;
+
           applyActive(currentEl, currentIndex, true);
           setActiveProjectIndex(displayIndex(currentIndex));
         }
@@ -299,11 +302,10 @@ useEffect(() => {
   }
 
   return () => {
-    nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
-    prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
     dragCleanup?.();
   };
 }, []);
+
 
   // Looping words for skills
   useEffect(() => {
