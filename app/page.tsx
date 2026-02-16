@@ -121,7 +121,7 @@ export default function Home() {
     };
   }, []);
 
-// Projects slider (horizontal loop, prev/next + click)
+  // Projects slider (horizontal loop, prev/next + click)
 useEffect(() => {
   const list = sliderListRef.current;
   if (!list) return;
@@ -162,9 +162,7 @@ useEffect(() => {
   let currentIndex = 0;
 
   const resolveActive = (el: HTMLElement) => el;
-
-  // ✅ FIX: offset index mapping so center slide matches correct project
-  const displayIndex = (loopIndex: number) => (loopIndex + 2) % totalSlides;
+  const displayIndex = (loopIndex: number) => loopIndex;
 
   const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
     if (activeElement) activeElement.classList.remove("active");
@@ -196,18 +194,17 @@ useEffect(() => {
       currentIndex = index;
 
       applyActive(el, index, true);
-
-      // ✅ project info uses corrected index
       setActiveProjectIndex(displayIndex(index));
     },
   });
 
-  // ✅ keep carousel start as 0
-  loop.toIndex(0, { duration: 0 });
-  applyActive(slides[0], 0, false);
-  setActiveProjectIndex(displayIndex(0));
-  currentEl = slides[0];
-  currentIndex = 0;
+  // ✅ Start centered on the middle slide (fix offset)
+  const startIndex = 1;
+  loop.toIndex(startIndex, { duration: 0 });
+  applyActive(slides[startIndex], startIndex, false);
+  setActiveProjectIndex(displayIndex(startIndex));
+  currentEl = slides[startIndex];
+  currentIndex = startIndex;
 
   const mapClickIndex = (i: number) => i;
 
@@ -307,8 +304,6 @@ useEffect(() => {
     dragCleanup?.();
   };
 }, []);
-
-
 
   // Looping words for skills
   useEffect(() => {
