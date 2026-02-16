@@ -390,6 +390,15 @@ useEffect(() => {
       link: "",
       github: "https://github.com/esqukev/auction.git",
     },
+    {
+      id: 4,
+      title: "More projects will display here",
+      description: "More projects will display here.",
+      technologies: [],
+      image: "/placeholder-more-projects.jpg",
+      link: "#",
+      github: "#",
+    },
   ];
 
   const skills = [
