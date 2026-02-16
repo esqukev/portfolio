@@ -390,6 +390,16 @@ useEffect(() => {
       link: "",
       github: "https://github.com/esqukev/auction.git",
     },
+    {
+      id: 4,
+      title: "More projects will display here",
+      description: "More projects will display here.",
+      technologies: [],
+      image: "",
+      link: "#",
+      github: "#",
+      placeholder: true,
+    },
   ];
 
   const skills = [
@@ -595,9 +605,15 @@ useEffect(() => {
                     <div className="slider__slide-inner">
                       <div className="block w-full h-full">
                         <div className="slide__img-wrap slide__img-placeholder">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
-                          <span className="slide__img-fallback hidden">{project.title}</span>
+                          {!(project as { placeholder?: boolean }).placeholder ? (
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
+                              <span className="slide__img-fallback hidden">{project.title}</span>
+                            </>
+                          ) : (
+                            <span className="slide__img-fallback">{project.title}</span>
+                          )}
                         </div>
                       </div>
                       <div className="slide__caption">
