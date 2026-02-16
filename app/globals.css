@@ -881,12 +881,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .slider__overlay-count .slider__count-col {
-    height: 1.1em;
-    overflow: hidden;
-    line-height: 1;
-  }
-  .slider__overlay-count .slider__count-heading {
-    line-height: 1.1em;
+    height: 1.5em;
   }
 }
 

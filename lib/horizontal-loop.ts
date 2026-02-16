@@ -6,7 +6,6 @@ export function horizontalLoop(
     paused?: boolean;
     draggable?: boolean;
     center?: boolean | Element;
-    centerOffset?: number;
     repeat?: number;
     speed?: number;
     snap?: boolean | number;
@@ -72,8 +71,7 @@ export function horizontalLoop(
   let timeWrap: (t: number) => number;
 
   const populateOffsets = () => {
-    const pxOffset = config.centerOffset ?? 0;
-    timeOffset = config.center ? (tl.duration() * (container.offsetWidth / 2 + pxOffset)) / totalWidth : 0;
+    timeOffset = config.center ? (tl.duration() * (container.offsetWidth / 2)) / totalWidth : 0;
     if (config.center) {
       times.forEach((t, i) => {
         times[i] = timeWrap(tl.labels["label" + i] + (tl.duration() * widths[i]) / 2 / totalWidth - timeOffset);
