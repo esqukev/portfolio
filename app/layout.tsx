@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Leckerli_One } from "next/font/google";
+import { Geist, Geist_Mono, Leckerli_One, Caveat } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,6 +18,12 @@ const leckerliOne = Leckerli_One({
   subsets: ["latin"],
 });
 
+const caveat = Caveat({
+  weight: ["400"],
+  variable: "--font-caveat",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Kevin Bermudez | Portfolio",
   description: "Web Developer & Designer portfolio - Kevin Bermudez",
@@ -32,7 +38,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       {/* suppressHydrationWarning: Prevents hydration errors caused by browser extensions that modify the DOM */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${leckerliOne.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${leckerliOne.variable} ${caveat.variable} antialiased`}
         suppressHydrationWarning
       >
         {children}

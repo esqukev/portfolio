@@ -5,7 +5,6 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { horizontalLoop } from "@/lib/horizontal-loop";
 import { DRAW_SVG_VARIANTS } from "@/lib/draw-svg-variants";
-import OrbitalAsterisks from "@/app/components/OrbitalAsterisks";
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
@@ -198,9 +197,8 @@ export default function Home() {
     nextBtns.forEach((btn) => btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 })));
     prevBtns.forEach((btn) => btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 })));
 
-    // Mouse drag + wheel for desktop - use slider section for full area
+    // Mouse drag for desktop - use slider section for full area
     let dragCleanup: (() => void) | undefined;
-    let wheelCleanup: (() => void) | undefined;
     const section = sliderSectionRef.current;
     const wrap = list.parentElement;
     if (section && wrap && typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
@@ -244,25 +242,11 @@ export default function Home() {
       section.style.cursor = "grab";
       section.addEventListener("mousedown", onMouseDown);
 
-      let wheelTimeout: ReturnType<typeof setTimeout>;
-      const onWheel = (e: WheelEvent) => {
-        e.preventDefault();
-        clearTimeout(wheelTimeout);
-        wheelTimeout = setTimeout(() => {
-          if (e.deltaY > 0) loop.next({ ease: "power3", duration: 0.5 });
-          else if (e.deltaY < 0) loop.previous({ ease: "power3", duration: 0.5 });
-        }, 50);
-      };
-      section.addEventListener("wheel", onWheel, { passive: false });
-
       dragCleanup = () => {
         section.style.cursor = "";
         section.removeEventListener("mousedown", onMouseDown);
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
-      };
-      wheelCleanup = () => {
-        section.removeEventListener("wheel", onWheel);
       };
     }
 
@@ -276,7 +260,6 @@ export default function Home() {
       nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
       prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
       dragCleanup?.();
-      wheelCleanup?.();
     };
   }, []);
 
@@ -401,13 +384,7 @@ export default function Home() {
   };
 
   return (
-    <div
-      className="min-h-screen text-[#0a0a0a] relative overflow-x-hidden"
-      role="main"
-      style={{
-        background: "linear-gradient(160deg, #f8f6fa 0%, #ede6f5 30%, #e5daf0 60%, #dfd2eb 100%)",
-      }}
-    >
+    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden font-sans" role="main">
       {/* Nav - sticky at top, centered */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
         <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">
@@ -465,14 +442,16 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Doodle: Disruptive - left of Web Artist, lower, tilted */}
+      {/* Doodle: Disruptive - left of Web Artist, tilted, thin handwritten */}
       <div
-        className="absolute left-[5%] lg:left-[8%] top-[42vh] z-20 pointer-events-none"
+        className="absolute left-[5%] lg:left-[8%] z-20 pointer-events-none"
         style={{
-          fontFamily: "var(--font-leckerli-one), cursive",
-          fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
+          fontFamily: "var(--font-caveat), cursive",
+          fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
+          fontWeight: 400,
           color: "#c41e3a",
           transform: "rotate(-12deg)",
+          top: "calc(42vh - 120px)",
         }}
       >
         Disruptive
@@ -515,7 +494,6 @@ export default function Home() {
 
       {/* About - centered, large text, fade-in */}
       <section ref={aboutRef} id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
-        <OrbitalAsterisks />
         <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight mb-5 animate-fade-in-slow text-center" style={{ opacity: 1 }}>
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
@@ -725,7 +703,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-10 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto flex flex-col justify-center items-center gap-4">
+        <div className="max-w-6xl mx-auto flex flex-col justify-center items-center gap-4 text-center w-full">
           <p className="text-sm text-[#737373]">
             © {new Date().getFullYear()} Kevin Bermudez
           </p>
@@ -756,12 +734,13 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Doodle: Stand out! - 400px below asterisk, tilted right */}
+      {/* Doodle: Stand out! - 400px below asterisk, tilted right, thin handwritten */}
       <div
         className="absolute right-[8%] top-[calc(15vh+800px)] z-[24] pointer-events-none"
         style={{
-          fontFamily: "var(--font-leckerli-one), cursive",
+          fontFamily: "var(--font-caveat), cursive",
           fontSize: "clamp(1.25rem, 3vw, 2rem)",
+          fontWeight: 400,
           color: "#c41e3a",
           transform: "rotate(8deg)",
         }}
