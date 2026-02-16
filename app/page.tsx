@@ -5,7 +5,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { horizontalLoop } from "@/lib/horizontal-loop";
 import { DRAW_SVG_VARIANTS } from "@/lib/draw-svg-variants";
-import OrbitalTechLogos from "@/app/components/OrbitalTechLogos";
+import OrbitalAsterisks from "@/app/components/OrbitalAsterisks";
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
@@ -157,8 +157,7 @@ export default function Home() {
     let currentEl: HTMLElement | null = null;
     let currentIndex = 0;
 
-    const resolveActive = (el: HTMLElement) =>
-      ((el.previousElementSibling as HTMLElement) || slides[totalSlides - 1]) ?? el;
+    const resolveActive = (el: HTMLElement) => el;
 
     const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
 
@@ -182,9 +181,8 @@ export default function Home() {
       onChange: (el, index) => {
         currentEl = el;
         currentIndex = index;
-        const centeredIndex = (index - 1 + totalSlides) % totalSlides;
         applyActive(el, index, true);
-        setActiveProjectIndex(centeredIndex);
+        setActiveProjectIndex(index);
       },
     });
     loop.toIndex(0, { duration: 0 });
@@ -231,9 +229,8 @@ export default function Home() {
           if (currentEl !== slides[idx]) {
             currentEl = slides[idx];
             currentIndex = idx;
-            const centeredIndex = (idx - 1 + totalSlides) % totalSlides;
             applyActive(currentEl, currentIndex, true);
-            setActiveProjectIndex(centeredIndex);
+            setActiveProjectIndex(currentIndex);
           }
         }
       };
@@ -404,7 +401,13 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden" role="main">
+    <div
+      className="min-h-screen text-[#0a0a0a] relative overflow-x-hidden"
+      role="main"
+      style={{
+        background: "linear-gradient(160deg, #f8f6fa 0%, #ede6f5 30%, #e5daf0 60%, #dfd2eb 100%)",
+      }}
+    >
       {/* Nav - sticky at top, centered */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
         <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">
@@ -462,6 +465,19 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Doodle: Disruptive - left of Web Artist, lower, tilted */}
+      <div
+        className="absolute left-[5%] lg:left-[8%] top-[42vh] z-20 pointer-events-none"
+        style={{
+          fontFamily: "var(--font-leckerli-one), cursive",
+          fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
+          color: "#c41e3a",
+          transform: "rotate(-12deg)",
+        }}
+      >
+        Disruptive
+      </div>
+
       {/* Hero Section */}
       <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative">
         <div className="max-w-6xl mx-auto relative z-10">
@@ -499,29 +515,7 @@ export default function Home() {
 
       {/* About - centered, large text, fade-in */}
       <section ref={aboutRef} id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
-        {/* Rotating asterisk ring - behind text */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="relative w-[480px] h-[480px] flex items-center justify-center">
-            <div className="absolute inset-0 animate-spin-slow">
-              {Array.from({ length: 18 }).map((_, i) => {
-                const angle = (360 / 18) * i;
-                return (
-                  <span
-                    key={i}
-                    className="absolute left-1/2 top-1/2 text-8xl font-extrabold"
-                    style={{
-                      color: "rgb(216, 180, 254)",
-                      transform: `rotate(${angle}deg) translateY(-220px) rotate(-${angle}deg)`,
-                      fontFamily: "var(--font-leckerli-one), cursive",
-                    }}
-                  >
-                    *
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <OrbitalAsterisks />
         <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight mb-5 animate-fade-in-slow text-center" style={{ opacity: 1 }}>
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
@@ -558,7 +552,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <OrbitalTechLogos />
       </section>
 
       {/* Projects Section - Draggable Slider */}
@@ -761,6 +754,19 @@ export default function Home() {
         >
           *
         </div>
+      </div>
+
+      {/* Doodle: Stand out! - 400px below asterisk, tilted right */}
+      <div
+        className="absolute right-[8%] top-[calc(15vh+800px)] z-[24] pointer-events-none"
+        style={{
+          fontFamily: "var(--font-leckerli-one), cursive",
+          fontSize: "clamp(1.25rem, 3vw, 2rem)",
+          color: "#c41e3a",
+          transform: "rotate(8deg)",
+        }}
+      >
+        Stand out!
       </div>
     </div>
   );
