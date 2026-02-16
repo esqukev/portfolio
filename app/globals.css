@@ -555,6 +555,11 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   overflow: hidden;
 }
 
+.slider__overlay-count .slider__count-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .slider__count-heading {
   width: 2ch;
   margin-top: 0;
@@ -689,6 +694,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   line-height: 0.9;
   position: relative;
   color: #0a0a0a;
+  width: 100%;
+  max-width: 100%;
 }
 
 .looping-words__list {
@@ -815,12 +822,18 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 @media screen and (max-width: 991px) {
+  .slider__section {
+    min-height: 40vh;
+  }
+
   .slider__main {
     position: relative;
   }
 
   .slider__slide {
-    width: 75vw;
+    width: 85vw;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
   }
 
   .slider__overlay {
@@ -835,6 +848,31 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     grid-column-gap: 2em;
     grid-row-gap: 2em;
     height: auto;
+  }
+
+  .slider__overlay-count .slider__count-col {
+    height: 1.5em;
+  }
+}
+
+/* Mobile: skills looping words - larger container, no word cut-off */
+@media screen and (max-width: 768px) {
+  .looping-words {
+    height: 3.5em;
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    max-width: 100%;
+  }
+
+  .looping-words__containers {
+    min-width: 100%;
+  }
+
+  .looping-words__list {
+    min-width: max-content;
+  }
+
+  .looping-words__p {
+    padding: 0 0.5rem;
   }
 }
 

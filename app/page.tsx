@@ -3,237 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { horizontalLoop } from "@/lib/horizontal-loop";
+import { DRAW_SVG_VARIANTS } from "@/lib/draw-svg-variants";
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
-
-const DRAW_SVG_VARIANTS = [
-  `<path d="M5 20.9999C26.7762 16.2245 49.5532 11.5572 71.7979 14.6666C84.9553 16.5057 97.0392 21.8432 109.987 24.3888C116.413 25.6523 123.012 25.5143 129.042 22.6388C135.981 19.3303 142.586 15.1422 150.092 13.3333C156.799 11.7168 161.702 14.6225 167.887 16.8333C181.562 21.7212 194.975 22.6234 209.252 21.3888C224.678 20.0548 239.912 17.991 255.42 18.3055C272.027 18.6422 288.409 18.867 305 17.9999" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
-  `<path d="M5 24.2592C26.233 20.2879 47.7083 16.9968 69.135 13.8421C98.0469 9.5853 128.407 4.02322 158.059 5.14674C172.583 5.69708 187.686 8.66104 201.598 11.9696C207.232 13.3093 215.437 14.9471 220.137 18.3619C224.401 21.4596 220.737 25.6575 217.184 27.6168C208.309 32.5097 197.199 34.281 186.698 34.8486C183.159 35.0399 147.197 36.2657 155.105 26.5837C158.11 22.9053 162.993 20.6229 167.764 18.7924C178.386 14.7164 190.115 12.1115 201.624 10.3984C218.367 7.90626 235.528 7.06127 252.521 7.49276C258.455 7.64343 264.389 7.92791 270.295 8.41825C280.321 9.25056 296 10.8932 305 13.0242" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
-  `<path d="M4.99805 20.9998C65.6267 17.4649 126.268 13.845 187.208 12.8887C226.483 12.2723 265.751 13.2796 304.998 13.9998" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
-  `<path d="M5 29.5014C9.61174 24.4515 12.9521 17.9873 20.9532 17.5292C23.7742 17.3676 27.0987 17.7897 29.6575 19.0014C33.2644 20.7093 35.6481 24.0004 39.4178 25.5014C48.3911 29.0744 55.7503 25.7731 63.3048 21.0292C67.9902 18.0869 73.7668 16.1366 79.3721 17.8903C85.1682 19.7036 88.2173 26.2464 94.4121 27.2514C102.584 28.5771 107.023 25.5064 113.276 20.6125C119.927 15.4067 128.83 12.3333 137.249 15.0014C141.418 16.3225 143.116 18.7528 146.581 21.0014C149.621 22.9736 152.78 23.6197 156.284 24.2514C165.142 25.8479 172.315 17.5185 179.144 13.5014C184.459 10.3746 191.785 8.74853 195.868 14.5292C199.252 19.3205 205.597 22.9057 211.621 22.5014C215.553 22.2374 220.183 17.8356 222.979 15.5569C225.4 13.5845 227.457 11.1105 230.742 10.5292C232.718 10.1794 234.784 12.9691 236.164 14.0014C238.543 15.7801 240.717 18.4775 243.356 19.8903C249.488 23.1729 255.706 21.2551 261.079 18.0014C266.571 14.6754 270.439 11.5202 277.146 13.6125C280.725 14.7289 283.221 17.209 286.393 19.0014C292.321 22.3517 298.255 22.5014 305 22.5014" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
-  `<path d="M5 29.8857C52.3147 26.9322 99.4329 21.6611 146.503 17.1765C151.753 16.6763 157.115 15.9505 162.415 15.6551C163.28 15.6069 165.074 15.4123 164.383 16.4275C161.704 20.3627 157.134 23.7551 153.95 27.4983C153.209 28.3702 148.194 33.4751 150.669 34.6605C153.638 36.0819 163.621 32.6063 165.039 32.2029C178.55 28.3608 191.49 23.5968 204.869 19.5404C231.903 11.3436 259.347 5.83254 288.793 5.12258C294.094 4.99476 299.722 4.82265 305 5.45025" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>`,
-];
-
-function horizontalLoop(
-  items: HTMLElement[],
-  config: {
-    paused?: boolean;
-    draggable?: boolean;
-    center?: boolean | Element;
-    repeat?: number;
-    speed?: number;
-    snap?: boolean | number;
-    paddingRight?: string;
-    reversed?: boolean;
-    onChange?: (element: HTMLElement, index: number) => void;
-  }
-) {
-  items = gsap.utils.toArray(items);
-  config = config || {};
-  const onChange = config.onChange;
-  let lastIndex = 0;
-  const tl = gsap.timeline({
-    repeat: config.repeat,
-    onUpdate: onChange
-      ? function () {
-          const i = tl.closestIndex();
-          if (lastIndex !== i) {
-            lastIndex = i;
-            onChange!(items[i], i);
-          }
-        }
-      : undefined,
-    paused: config.paused,
-    defaults: { ease: "none" },
-    onReverseComplete: () => {
-      tl.totalTime(tl.rawTime() + tl.duration() * 100);
-    },
-  });
-  const length = items.length;
-  const startX = items[0].offsetLeft;
-  const times: number[] = [];
-  const widths: number[] = [];
-  const spaceBefore: number[] = [];
-  const xPercents: number[] = [];
-  let curIndex = 0;
-  const snap = config.snap === false ? (v: number) => v : gsap.utils.snap(typeof config.snap === "number" ? config.snap : 1);
-  const container = config.center === true ? items[0].parentNode as HTMLElement : (Array.isArray(config.center) ? config.center[0] : config.center) || (items[0].parentNode as HTMLElement);
-  let totalWidth: number;
-  const getTotalWidth = () =>
-    items[length - 1].offsetLeft +
-    (xPercents[length - 1] / 100) * widths[length - 1] -
-    startX +
-    spaceBefore[0] +
-    items[length - 1].offsetWidth * (gsap.getProperty(items[length - 1], "scaleX") as number) +
-    (parseFloat(config.paddingRight || "0") || 0);
-  const pixelsPerSecond = (config.speed || 1) * 100;
-
-  const populateWidths = () => {
-    let b1 = container.getBoundingClientRect();
-    items.forEach((el, i) => {
-      widths[i] = parseFloat(gsap.getProperty(el, "width", "px") as string);
-      xPercents[i] = snap((parseFloat(gsap.getProperty(el, "x", "px") as string) / widths[i]) * 100 + (gsap.getProperty(el, "xPercent") as number));
-      const b2 = el.getBoundingClientRect();
-      spaceBefore[i] = b2.left - (i ? b1.right : b1.left);
-      b1 = b2;
-    });
-    gsap.set(items, { xPercent: (i) => xPercents[i] });
-    totalWidth = getTotalWidth();
-  };
-
-  let timeOffset = 0;
-  let timeWrap: (t: number) => number;
-
-  const populateOffsets = () => {
-    timeOffset = config.center ? (tl.duration() * (container.offsetWidth / 2)) / totalWidth : 0;
-    if (config.center) {
-      times.forEach((t, i) => {
-        times[i] = timeWrap(tl.labels["label" + i] + (tl.duration() * widths[i]) / 2 / totalWidth - timeOffset);
-      });
-    }
-  };
-
-  const getClosest = (values: number[], value: number, wrap: number) => {
-    let i = values.length;
-    let closest = 1e10;
-    let index = 0;
-    while (i--) {
-      let d = Math.abs(values[i] - value);
-      if (d > wrap / 2) d = wrap - d;
-      if (d < closest) {
-        closest = d;
-        index = i;
-      }
-    }
-    return index;
-  };
-
-  const populateTimeline = () => {
-    tl.clear();
-    for (let i = 0; i < length; i++) {
-      const item = items[i];
-      const curX = (xPercents[i] / 100) * widths[i];
-      const distanceToStart = item.offsetLeft + curX - startX + spaceBefore[0];
-      const distanceToLoop = distanceToStart + widths[i] * (gsap.getProperty(item, "scaleX") as number);
-      tl.to(
-        item,
-        { xPercent: snap(((curX - distanceToLoop) / widths[i]) * 100), duration: distanceToLoop / pixelsPerSecond },
-        0
-      )
-        .fromTo(
-          item,
-          { xPercent: snap(((curX - distanceToLoop + totalWidth) / widths[i]) * 100) },
-          { xPercent: xPercents[i], duration: (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond, immediateRender: false },
-          distanceToLoop / pixelsPerSecond
-        )
-        .add("label" + i, distanceToStart / pixelsPerSecond);
-      times[i] = distanceToStart / pixelsPerSecond;
-    }
-    timeWrap = gsap.utils.wrap(0, tl.duration());
-  };
-
-  const refresh = (deep?: boolean) => {
-    const progress = tl.progress();
-    tl.progress(0, true);
-    populateWidths();
-    if (deep) populateTimeline();
-    populateOffsets();
-    if (deep && (tl as gsap.core.Timeline & { draggable?: unknown }).draggable) {
-      tl.time(times[curIndex], true);
-    } else {
-      tl.progress(progress, true);
-    }
-  };
-
-  const onResize = () => refresh(true);
-  window.addEventListener("resize", onResize);
-  let proxy: HTMLDivElement;
-
-  gsap.set(items, { x: 0 });
-  populateWidths();
-  populateTimeline();
-  populateOffsets();
-
-  function toIndex(index: number, vars?: gsap.TweenVars) {
-    vars = vars || {};
-    if (Math.abs(index - curIndex) > length / 2) index += index > curIndex ? -length : length;
-    const newIndex = gsap.utils.wrap(0, length, index);
-    let time = times[newIndex];
-    if (time > tl.time() !== index > curIndex && index !== curIndex) time += tl.duration() * (index > curIndex ? 1 : -1);
-    if (time < 0 || time > tl.duration()) (vars as Record<string, unknown>).modifiers = { time: timeWrap };
-    curIndex = newIndex;
-    (vars as Record<string, unknown>).overwrite = true;
-    gsap.killTweensOf(proxy);
-    return (vars as Record<string, unknown>).duration === 0 ? tl.time(timeWrap(time)) : tl.tweenTo(time, vars);
-  }
-
-  tl.toIndex = (index: number, vars?: gsap.TweenVars) => toIndex(index, vars);
-  tl.closestIndex = (setCurrent?: boolean) => {
-    const index = getClosest(times, tl.time(), tl.duration());
-    if (setCurrent) {
-      curIndex = index;
-    }
-    return index;
-  };
-  tl.current = () => curIndex;
-  tl.next = (vars?: gsap.TweenVars) => toIndex(tl.current() + 1, vars);
-  tl.previous = (vars?: gsap.TweenVars) => toIndex(tl.current() - 1, vars);
-  tl.times = times;
-  tl.progress(1, true).progress(0, true);
-
-  if (config.reversed) {
-    tl.vars?.onReverseComplete?.();
-    tl.reverse();
-  }
-
-  if (config.draggable && typeof Draggable !== "undefined") {
-    proxy = document.createElement("div");
-    const wrap = gsap.utils.wrap(0, 1);
-    let ratio: number, startProgress: number, lastSnap: number, initChangeX: number;
-    const syncIndex = () => tl.closestIndex(true);
-    const instance = Draggable.create(proxy, {
-      trigger: items[0].parentNode as HTMLElement,
-      type: "x",
-      onPressInit(this: { x: number }) {
-        const x = this.x;
-        gsap.killTweensOf(tl);
-        tl.pause();
-        startProgress = tl.progress();
-        refresh();
-        ratio = 1 / totalWidth;
-        initChangeX = startProgress / -ratio - x;
-        gsap.set(proxy, { x: startProgress / -ratio });
-      },
-      onDrag(this: { startX: number; x: number }) {
-        tl.progress(wrap(startProgress + (this.startX - this.x) * ratio));
-      },
-      onThrowUpdate(this: { startX: number; x: number }) {
-        tl.progress(wrap(startProgress + (this.startX - this.x) * ratio));
-      },
-      overshootTolerance: 0,
-      inertia: true,
-      snap(this: { x: number }, value: number) {
-        if (Math.abs(startProgress / -ratio - this.x) < 10) return lastSnap + initChangeX;
-        const time = -(value * ratio) * tl.duration();
-        const wrappedTime = timeWrap(time);
-        const snapTime = times[getClosest(times, wrappedTime, tl.duration())];
-        let dif = snapTime - wrappedTime;
-        if (Math.abs(dif) > tl.duration() / 2) dif += dif < 0 ? tl.duration() : -tl.duration();
-        lastSnap = (time + dif) / tl.duration() / -ratio;
-        return lastSnap;
-      },
-      onRelease: syncIndex,
-      onThrowComplete: syncIndex,
-    })[0];
-    (tl as gsap.core.Timeline & { draggable?: unknown }).draggable = instance;
-  }
-
-  tl.closestIndex(true);
-  lastIndex = curIndex;
-  if (onChange) onChange(items[curIndex], curIndex);
-
-  return tl;
-}
 
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
@@ -353,24 +126,30 @@ export default function Home() {
     if (!list) return;
 
     const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
-    const nextBtn = document.querySelector("[data-slider-next]");
-    const prevBtn = document.querySelector("[data-slider-prev]");
+    const nextBtns = document.querySelectorAll("[data-slider-next]");
+    const prevBtns = document.querySelectorAll("[data-slider-prev]");
     const totalEl = document.querySelector("[data-slider-total]");
+    const totalElMobile = document.querySelector("[data-slider-total-mobile]");
     const stepEl = document.querySelector("[data-slider-step]");
+    const stepElMobile = document.querySelector("[data-slider-step-mobile]");
     const stepsParent = stepEl?.parentElement;
+    const stepsParentMobile = stepElMobile?.parentElement;
 
     let activeElement: HTMLElement | null = null;
     const totalSlides = slides.length;
 
-    if (totalEl) totalEl.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
-    if (stepsParent && stepEl) {
-      stepsParent.innerHTML = "";
-      slides.forEach((_, i) => {
-        const clone = stepEl.cloneNode(true) as HTMLElement;
-        clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
-        stepsParent.appendChild(clone);
-      });
-    }
+    [totalEl, totalElMobile].forEach((el) => { if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides); });
+    [stepEl, stepElMobile].forEach((sel) => {
+      const parent = sel?.parentElement;
+      if (parent && sel) {
+        parent.innerHTML = "";
+        slides.forEach((_, i) => {
+          const clone = sel.cloneNode(true) as HTMLElement;
+          clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
+          parent.appendChild(clone);
+        });
+      }
+    });
     const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
 
     const mq = window.matchMedia("(min-width: 992px)");
@@ -385,15 +164,18 @@ export default function Home() {
 
     const resolveActive = (el: HTMLElement) => (useNextForActive ? (el.nextElementSibling as HTMLElement) || slides[0] : el);
 
+    const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
+
     const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
       if (activeElement) activeElement.classList.remove("active");
       const target = resolveActive(el);
       target.classList.add("active");
       activeElement = target;
-      if (allSteps.length && animateNumbers) {
-        gsap.to(allSteps, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
-      } else if (allSteps.length) {
-        gsap.set(allSteps, { y: `${-100 * index}%` });
+      const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
+      if (stepsToAnimate.length && animateNumbers) {
+        gsap.to(stepsToAnimate, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
+      } else if (stepsToAnimate.length) {
+        gsap.set(stepsToAnimate, { y: `${-100 * index}%` });
       }
     };
 
@@ -417,8 +199,52 @@ export default function Home() {
       });
     });
 
-    nextBtn?.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 }));
-    prevBtn?.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 }));
+    nextBtns.forEach((btn) => btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 })));
+    prevBtns.forEach((btn) => btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 })));
+
+    // Mouse drag for desktop
+    let dragCleanup: (() => void) | undefined;
+    const wrap = list.parentElement;
+    if (wrap && typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
+      let startX = 0;
+      let startProgress = 0;
+      const onMouseDown = (e: MouseEvent) => {
+        startX = e.clientX;
+        startProgress = loop.progress();
+        gsap.killTweensOf(loop);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+      };
+      const onMouseMove = (e: MouseEvent) => {
+        const dx = e.clientX - startX;
+        const totalWidth = (wrap as HTMLElement).offsetWidth;
+        if (totalWidth > 0) {
+          const delta = -dx / totalWidth;
+          let p = startProgress + delta;
+          p = Math.max(0, Math.min(1, p));
+          loop.progress(p);
+          const idx = loop.closestIndex();
+          if (currentEl !== slides[idx]) {
+            currentEl = slides[idx];
+            currentIndex = idx;
+            applyActive(currentEl, currentIndex, true);
+            setActiveProjectIndex(idx);
+          }
+        }
+      };
+      const onMouseUp = () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+        const idx = loop.closestIndex(true);
+        loop.toIndex(idx, { ease: "power3", duration: 0.4 });
+      };
+      wrap.addEventListener("mousedown", onMouseDown);
+      dragCleanup = () => {
+        wrap.removeEventListener("mousedown", onMouseDown);
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+    }
 
     if (!currentEl && slides[0]) {
       currentEl = slides[0];
@@ -427,8 +253,9 @@ export default function Home() {
     }
 
     return () => {
-      nextBtn?.removeEventListener("click", () => {});
-      prevBtn?.removeEventListener("click", () => {});
+      nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+      prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+      dragCleanup?.();
     };
   }, []);
 
@@ -492,7 +319,7 @@ export default function Home() {
       title: "Artist Press Kit",
       description: "Showcase your art with a fully functional-minimal design press kit to make you stand out and look professional.",
       technologies: ["Next.js", "JavaScript", "Vercel", "Reactive", "Tailwind CSS"],
-      image: "/project-1.jpg",
+      image: "/killer.png",
       link: "https://www.killernugget.com/",
       github: "https://github.com/esqukev/KillerWeb2",
     },
@@ -501,7 +328,7 @@ export default function Home() {
       title: "Brand Presentation",
       description: "Immersive visual experiences — crafting tailored visuals that push the boundaries of your vision.",
       technologies: ["Next.js", "TypeScript", "CSS", "Tailwind", "React", "GSAP", "Lenis", "Open Graph"],
-      image: "/project-2.jpg",
+      image: "/planbfx.png",
       link: "https://www.planb-fx.com/",
       github: "https://github.com/esqukev/planbfx-final-site",
     },
@@ -510,7 +337,7 @@ export default function Home() {
       title: "Auction",
       description: "A complete website for auctioning collection items focused on back end.",
       technologies: ["Html", "CSS", "Javascript", "API", "Postman", "JSON"],
-      image: "/project-2.jpg",
+      image: "/auction.png",
       link: "",
       github: "https://github.com/esqukev/auction.git",
     },
@@ -548,19 +375,15 @@ export default function Home() {
   const handleSendEmail = () => {
     const email = "kevinbermudez46@gmail.com";
     const subject = "Contact from Portfolio";
-    
-    // Open Gmail compose directly - this works universally
     const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}`;
     window.open(gmailLink, "_blank");
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden">
-      <div className="flex w-full">
-        <div className="flex-1 min-w-0">
-      {/* Nav - sticky at top */}
-      <div className="sticky top-0 z-50 pt-6 pb-2 px-4">
-        <div className="w-[min(90%,42rem)] mx-auto transition-all duration-500 ease-out">
+    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden" role="main">
+      {/* Nav - sticky at top, centered */}
+      <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
+        <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">
         <nav
           className="rounded-2xl border-none overflow-hidden transition-all duration-500 bg-[#000]"
           style={{
@@ -676,11 +499,11 @@ export default function Home() {
           </div>
         </div>
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight mb-5 animate-fade-in-slow">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#737373] leading-tight mb-5 animate-fade-in-slow">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a] leading-tight animate-fade-in-slow delay-200">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#737373] leading-tight animate-fade-in-slow delay-200">
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
           </p>
@@ -690,7 +513,7 @@ export default function Home() {
       {/* Skills Section - Looping words */}
       <section id="skills" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 text-center">Skills</h2>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 text-center uppercase">SKILLS</h2>
           <p className="text-[#737373] text-sm uppercase tracking-widest mb-10 text-center">What I work with</p>
           <div className="looping-words">
             <div className="looping-words__containers">
@@ -714,12 +537,17 @@ export default function Home() {
       </section>
 
       {/* Projects Section - Draggable Slider */}
-      <section id="projects" className="py-24 px-0 lg:px-8">
+      <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
+        {/* Mobile: PROJECTS + WHAT I'VE BUILT at top left */}
+        <div className="lg:hidden mb-6">
+          <h2 className="text-3xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
+          <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
+        </div>
         <div className="slider__section">
-          <div className="slider__overlay">
+          <div className="slider__overlay hidden lg:flex">
             <div className="slider__overlay-inner">
               <div className="slider__overlay-header">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-1">Projects</h2>
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
                 <p className="text-[#737373] text-sm uppercase tracking-widest">What I&apos;ve built</p>
               </div>
               <div className="slider__overlay-count">
@@ -781,8 +609,28 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* Mobile: 01/05 + arrows below cards */}
+        <div className="lg:hidden flex items-center gap-4 mt-6">
+          <div className="slider__overlay-count flex items-center gap-2">
+            <div className="slider__count-col">
+              <h2 data-slider-step-mobile className="slider__count-heading text-2xl">01</h2>
+            </div>
+            <div className="slider__count-divider" />
+            <div className="slider__count-col">
+              <h2 data-slider-total-mobile className="slider__count-heading text-2xl">00</h2>
+            </div>
+          </div>
+          <div className="slider__overlay-nav flex gap-4">
+            <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-12 h-12">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+            </button>
+            <button type="button" aria-label="next" data-slider-next className="slider__btn w-12 h-12">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+            </button>
+          </div>
+        </div>
         {/* Floating project info - syncs with active slide */}
-        <div className="max-w-6xl mx-auto mt-12 px-6 lg:px-0">
+        <div className="max-w-6xl mx-auto mt-8 lg:mt-12 px-0 lg:px-0">
           <div
             key={activeProjectIndex}
             className="project-info-floating"
@@ -857,15 +705,14 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-10 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="max-w-6xl mx-auto flex justify-center items-center">
           <p className="text-sm text-[#737373]">
             © {new Date().getFullYear()} Kevin Bermudez
           </p>
         </div>
       </footer>
-        </div>
-      {/* Asterisk - right edge, sticky, hover zone */}
-      <div className="asterisk-hover-zone sticky top-[50%] w-32 flex-shrink-0 z-[25] select-none self-start" aria-hidden style={{ marginTop: "-50vh" }}>
+      {/* Asterisk - right edge, fixed at top of first section */}
+      <div className="asterisk-hover-zone fixed right-0 top-[15vh] w-32 h-32 z-[25] select-none" aria-hidden>
         <div
           className="asterisk-right"
           style={{
@@ -877,7 +724,6 @@ export default function Home() {
           *
         </div>
       </div>
-      </div>
-    </main>
+    </div>
   );
 }
