@@ -160,7 +160,7 @@ export default function Home() {
 
     const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
 
-    const displayIndex = (loopIndex: number) => (loopIndex - 1 + totalSlides) % totalSlides;
+    const displayIndex = (loopIndex: number) => loopIndex;
 
     const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
       if (activeElement) activeElement.classList.remove("active");
@@ -187,7 +187,7 @@ export default function Home() {
         setActiveProjectIndex(displayIndex(index));
       },
     });
-    loop.toIndex(1, { duration: 0 });
+    loop.toIndex(0, { duration: 0 });
 
     const mapClickIndex = (i: number) => i;
     slides.forEach((slide, i) => {
@@ -381,10 +381,9 @@ export default function Home() {
   ];
 
   const handleSendEmail = () => {
-    const email = "kevinbermudez46@gmail.com";
+    const email = "kevinbermudez94@hotmail.com";
     const subject = "Contact from Portfolio";
-    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}`;
-    window.open(gmailLink, "_blank");
+    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}`, "_blank");
   };
 
   return (
@@ -523,6 +522,11 @@ export default function Home() {
 
       {/* Projects Section - Draggable Slider */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
+        {/* Mobile: solo PROJECTS + WHAT I'VE BUILT arriba del card */}
+        <div className="lg:hidden mb-4">
+          <h2 className="text-xl font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
+          <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
+        </div>
         <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay hidden lg:flex">
             <div className="slider__overlay-inner">
@@ -568,10 +572,8 @@ export default function Home() {
           <div className="slider__main">
             <div className="slider__wrap">
               <div ref={sliderListRef} data-slider="list" className="slider__list">
-                {projects.map((_, idx) => {
-                  const project = projects[(idx - 1 + projects.length) % projects.length];
-                  return (
-                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 1 ? "active" : ""}`}>
+                {projects.map((project, idx) => (
+                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 0 ? "active" : ""}`}>
                     <div className="slider__slide-inner">
                       <div className="block w-full h-full">
                         <div className="slide__img-wrap slide__img-placeholder">
@@ -586,39 +588,34 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                );})}
+                ))}
               </div>
             </div>
           </div>
         </div>
-        {/* Mobile: PROJECTS + 01/05 + arrows en una sola fila debajo de cards */}
-        <div className="lg:hidden mt-4 flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
-            <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
-          </div>
-          <div className="flex items-center gap-3">
+        {/* Debajo del card: mobile tiene 01/05+flechas a la izq; desktop solo info */}
+        <div className="mt-4 lg:mt-12 flex flex-col lg:flex-row gap-6 items-start max-w-6xl mx-auto">
+          <div className="lg:hidden flex flex-col gap-2 flex-shrink-0">
             <div className="slider__overlay-count flex items-center gap-1">
               <div className="slider__count-col">
-                <h2 data-slider-step-mobile className="slider__count-heading text-xl">01</h2>
+                <h2 data-slider-step-mobile className="slider__count-heading text-base">01</h2>
               </div>
               <div className="slider__count-divider" />
               <div className="slider__count-col">
-                <h2 data-slider-total-mobile className="slider__count-heading text-xl">00</h2>
+                <h2 data-slider-total-mobile className="slider__count-heading text-base">00</h2>
               </div>
             </div>
             <div className="slider__overlay-nav flex gap-2">
-              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-10 h-10">
+              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-9 h-9">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
-              <button type="button" aria-label="next" data-slider-next className="slider__btn w-10 h-10 flex-shrink-0">
+              <button type="button" aria-label="next" data-slider-next className="slider__btn w-9 h-9 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
             </div>
           </div>
-        </div>
-        {/* Floating project info - syncs with active slide (on mobile: below arrows; on desktop: below cards) */}
-        <div className="max-w-6xl mx-auto mt-6 lg:mt-12 px-0 lg:px-0">
+          {/* Project info - derecha en mobile */}
+          <div className="flex-1 min-w-0">
           <div
             key={activeProjectIndex}
             className="project-info-floating"
@@ -655,6 +652,7 @@ export default function Home() {
               </a>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
@@ -673,6 +671,14 @@ export default function Home() {
             >
               Send Email
             </button>
+            <a
+              href="https://wa.me/50661371097"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
+            >
+              WhatsApp
+            </a>
             <a
               href="https://github.com/esqukev"
               target="_blank"
@@ -706,7 +712,7 @@ export default function Home() {
             <a href="https://www.linkedin.com/in/kevin-bermudez-831442241/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-[#737373] hover:text-[#0a0a0a] transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
             </a>
-            <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-[#737373] hover:text-[#0a0a0a] transition-colors">
+            <a href="https://wa.me/50661371097" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-[#737373] hover:text-[#0a0a0a] transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             </a>
           </div>

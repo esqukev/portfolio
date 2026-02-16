@@ -503,8 +503,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 @media screen and (max-width: 991px) {
+  /* Mostrar caption en mobile para "More projects will be displayed here" */
   .slide__caption {
-    display: none;
+    display: flex;
   }
 }
 
@@ -854,8 +855,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     justify-content: center;
   }
 
+  /* Peek: slides un poco más estrechos para ver card entrante/saliente */
   .slider__slide {
-    width: min(82vw, 340px);
+    width: min(75vw, 300px);
     padding-left: 0.5em;
     padding-right: 0.5em;
     flex-shrink: 0;
