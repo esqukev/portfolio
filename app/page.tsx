@@ -176,10 +176,12 @@ export default function Home() {
       }
     };
 
+    const slideWidth = slides[0]?.offsetWidth ?? 400;
     const loop = horizontalLoop(slides, {
       paused: true,
       draggable: false,
       center: true,
+      centerOffset: slideWidth * 2,
       onChange: (el, index) => {
         currentEl = el;
         currentIndex = index;
@@ -522,10 +524,10 @@ export default function Home() {
 
       {/* Projects Section - Draggable Slider */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
-        {/* Mobile: solo PROJECTS + WHAT I'VE BUILT arriba del card */}
+        {/* Mobile: solo PROJECTS + WHAT I'VE BUILT arriba del card - una sola vez */}
         <div className="lg:hidden mb-4">
-          <h2 className="text-xl font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
-          <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
+          <h2 className="text-lg font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
+          <p className="text-[#737373] text-[10px] uppercase tracking-widest">What I&apos;ve built</p>
         </div>
         <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay hidden lg:flex">
@@ -595,21 +597,21 @@ export default function Home() {
         </div>
         {/* Debajo del card: mobile tiene 01/05+flechas a la izq; desktop solo info */}
         <div className="mt-4 lg:mt-12 flex flex-col lg:flex-row gap-6 items-start max-w-6xl mx-auto">
-          <div className="lg:hidden flex flex-col gap-2 flex-shrink-0">
-            <div className="slider__overlay-count flex items-center gap-1">
+          <div className="lg:hidden flex flex-col gap-1.5 flex-shrink-0">
+            <div className="slider__overlay-count flex items-center gap-0.5">
               <div className="slider__count-col">
-                <h2 data-slider-step-mobile className="slider__count-heading text-base">01</h2>
+                <h2 data-slider-step-mobile className="slider__count-heading text-sm">01</h2>
               </div>
               <div className="slider__count-divider" />
               <div className="slider__count-col">
-                <h2 data-slider-total-mobile className="slider__count-heading text-base">00</h2>
+                <h2 data-slider-total-mobile className="slider__count-heading text-sm">00</h2>
               </div>
             </div>
-            <div className="slider__overlay-nav flex gap-2">
-              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-9 h-9">
+            <div className="slider__overlay-nav flex gap-1">
+              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-8 h-8">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
-              <button type="button" aria-label="next" data-slider-next className="slider__btn w-9 h-9 flex-shrink-0">
+              <button type="button" aria-label="next" data-slider-next className="slider__btn w-8 h-8 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
             </div>

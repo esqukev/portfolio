@@ -872,11 +872,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .slider__overlay {
-    width: 100%;
-    position: relative;
-    inset: auto;
-    padding-bottom: 2em;
-    background-image: linear-gradient(180deg, #f5f5f5 85%, transparent);
+    display: none !important;
   }
 
   .slider__overlay-inner {
