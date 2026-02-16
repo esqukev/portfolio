@@ -17,6 +17,7 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
   const sliderListRef = useRef<HTMLDivElement>(null);
+  const sliderSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -199,23 +200,28 @@ export default function Home() {
     nextBtns.forEach((btn) => btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 })));
     prevBtns.forEach((btn) => btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 })));
 
-    // Mouse drag + wheel for desktop
+    // Mouse drag + wheel for desktop - use slider section for full area
     let dragCleanup: (() => void) | undefined;
     let wheelCleanup: (() => void) | undefined;
+    const section = sliderSectionRef.current;
     const wrap = list.parentElement;
-    if (wrap && typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
+    if (section && wrap && typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
       let startX = 0;
       let startProgress = 0;
+      let isDragging = false;
       const onMouseDown = (e: MouseEvent) => {
+        e.preventDefault();
         startX = e.clientX;
         startProgress = loop.progress();
+        isDragging = true;
         gsap.killTweensOf(loop);
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
       };
       const onMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
         const dx = e.clientX - startX;
-        const totalWidth = (wrap as HTMLElement).offsetWidth;
+        const totalWidth = section.offsetWidth;
         if (totalWidth > 0) {
           const delta = -dx / totalWidth;
           let p = startProgress + delta;
@@ -225,19 +231,21 @@ export default function Home() {
           if (currentEl !== slides[idx]) {
             currentEl = slides[idx];
             currentIndex = idx;
+            const centeredIndex = (idx - 1 + totalSlides) % totalSlides;
             applyActive(currentEl, currentIndex, true);
-            setActiveProjectIndex(idx);
+            setActiveProjectIndex(centeredIndex);
           }
         }
       };
       const onMouseUp = () => {
+        isDragging = false;
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
-          const idx = loop.closestIndex(true);
+        const idx = loop.closestIndex(true);
         loop.toIndex(idx, { ease: "power3", duration: 0.4 });
       };
-      wrap.style.cursor = "grab";
-      wrap.addEventListener("mousedown", onMouseDown);
+      section.style.cursor = "grab";
+      section.addEventListener("mousedown", onMouseDown);
 
       let wheelTimeout: ReturnType<typeof setTimeout>;
       const onWheel = (e: WheelEvent) => {
@@ -248,16 +256,16 @@ export default function Home() {
           else if (e.deltaY < 0) loop.previous({ ease: "power3", duration: 0.5 });
         }, 50);
       };
-      wrap.addEventListener("wheel", onWheel, { passive: false });
+      section.addEventListener("wheel", onWheel, { passive: false });
 
       dragCleanup = () => {
-        wrap.style.cursor = "";
-        wrap.removeEventListener("mousedown", onMouseDown);
+        section.style.cursor = "";
+        section.removeEventListener("mousedown", onMouseDown);
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
       };
       wheelCleanup = () => {
-        wrap.removeEventListener("wheel", onWheel);
+        section.removeEventListener("wheel", onWheel);
       };
     }
 
@@ -515,11 +523,11 @@ export default function Home() {
           </div>
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#737373] leading-tight mb-5 animate-fade-in-slow text-center">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight mb-5 animate-fade-in-slow text-center" style={{ opacity: 1 }}>
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#737373] leading-tight animate-fade-in-slow delay-200 text-center">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight animate-fade-in-slow delay-200 text-center" style={{ opacity: 1 }}>
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
           </p>
@@ -560,7 +568,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
           <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
         </div>
-        <div className="slider__section">
+        <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay hidden lg:flex">
             <div className="slider__overlay-inner">
               <div className="slider__overlay-header">
@@ -646,8 +654,8 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {/* Floating project info - syncs with active slide */}
-        <div className="max-w-6xl mx-auto mt-8 lg:mt-12 px-0 lg:px-0">
+        {/* Floating project info - syncs with active slide (on mobile: below arrows; on desktop: below cards) */}
+        <div className="max-w-6xl mx-auto mt-6 lg:mt-12 px-0 lg:px-0">
           <div
             key={activeProjectIndex}
             className="project-info-floating"

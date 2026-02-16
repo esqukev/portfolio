@@ -3,15 +3,15 @@
 import { useEffect, useRef } from "react";
 
 const tech = [
-  { name: "HTML", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
-  { name: "CSS", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" },
-  { name: "JavaScript", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" },
-  { name: "Next.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" },
-  { name: "Tailwind", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" },
-  { name: "MongoDB", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" },
-  { name: "SQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
-  { name: "Git", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" },
-  { name: "Node.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
+  { name: "HTML", src: "/html.svg" },
+  { name: "CSS", src: "/css.svg" },
+  { name: "JavaScript", src: "/javascript.svg" },
+  { name: "Next.js", src: "/next-js.svg" },
+  { name: "Tailwind", src: "/tailwind.svg" },
+  { name: "MongoDB", src: "/mongodb.svg" },
+  { name: "SQL", src: "/sql.svg" },
+  { name: "Git", src: "/git.svg" },
+  { name: "Node.js", src: "/nodejs.svg" },
 ];
 
 export default function OrbitalTechLogos() {
@@ -88,7 +88,7 @@ export default function OrbitalTechLogos() {
   }, []);
 
   return (
-    <div className="relative w-full flex items-center justify-center py-20 overflow-hidden">
+    <div className="relative w-full flex items-center justify-center py-20 overflow-hidden bg-transparent">
       <div
         ref={containerRef}
         className="relative transition-transform duration-200 ease-out"
@@ -126,12 +126,9 @@ export default function OrbitalTechLogos() {
 
           <div className="absolute flex flex-col items-center text-center pointer-events-none">
             <p className="text-xs tracking-[0.45em] text-[#525252] uppercase opacity-90">
-              Tech Stack
+              TECH STACK
             </p>
-            <h3 className="mt-2 text-2xl font-semibold text-[#0a0a0a] opacity-95">
-              Creative Developer
-            </h3>
-            <p className="mt-2 text-sm text-[#525252] max-w-[320px] leading-relaxed opacity-90">
+            <p className="mt-3 text-sm text-[#525252] max-w-[320px] leading-relaxed opacity-90 uppercase tracking-wide">
               Modern tools. Clean builds. Performance-first.
             </p>
           </div>
