@@ -673,7 +673,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 [data-slider-slide] {
-  opacity: 0.2;
+  opacity: 0.35;
 }
 
 [data-slider-slide].active {
