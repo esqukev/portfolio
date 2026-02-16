@@ -830,20 +830,43 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 @media screen and (max-width: 991px) {
   .slider__section {
-    min-height: 40vh;
-    justify-content: flex-start;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 0;
   }
 
   .slider__main {
     position: relative;
     overflow: hidden;
+    min-height: 260px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .slider__wrap {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .slider__list {
+    justify-content: center;
   }
 
   .slider__slide {
-    width: 85vw;
-    padding-left: 0.75em;
-    padding-right: 0.75em;
+    width: min(82vw, 340px);
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     flex-shrink: 0;
+  }
+
+  .slider__slide-inner {
+    border-radius: 0.5em;
+  }
+
+  .slide__img {
+    object-fit: cover;
   }
 
   .slider__overlay {

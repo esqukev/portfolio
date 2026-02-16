@@ -160,16 +160,19 @@ export default function Home() {
 
     const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
 
+    const displayIndex = (loopIndex: number) => (loopIndex - 1 + totalSlides) % totalSlides;
+
     const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
       if (activeElement) activeElement.classList.remove("active");
       const target = resolveActive(el);
       target.classList.add("active");
       activeElement = target;
+      const disp = displayIndex(index);
       const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
       if (stepsToAnimate.length && animateNumbers) {
-        gsap.to(stepsToAnimate, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
+        gsap.to(stepsToAnimate, { y: `${-100 * disp}%`, ease: "power3", duration: 0.45 });
       } else if (stepsToAnimate.length) {
-        gsap.set(stepsToAnimate, { y: `${-100 * index}%` });
+        gsap.set(stepsToAnimate, { y: `${-100 * disp}%` });
       }
     };
 
@@ -181,10 +184,10 @@ export default function Home() {
         currentEl = el;
         currentIndex = index;
         applyActive(el, index, true);
-        setActiveProjectIndex(index);
+        setActiveProjectIndex(displayIndex(index));
       },
     });
-    loop.toIndex(0, { duration: 0 });
+    loop.toIndex(1, { duration: 0 });
 
     const mapClickIndex = (i: number) => i;
     slides.forEach((slide, i) => {
@@ -228,7 +231,7 @@ export default function Home() {
             currentEl = slides[idx];
             currentIndex = idx;
             applyActive(currentEl, currentIndex, true);
-            setActiveProjectIndex(currentIndex);
+            setActiveProjectIndex(displayIndex(currentIndex));
           }
         }
       };
@@ -250,10 +253,11 @@ export default function Home() {
       };
     }
 
-    if (!currentEl && slides[0]) {
-      currentEl = slides[0];
-      currentIndex = 0;
+    if (!currentEl && slides[1]) {
+      currentEl = slides[1];
+      currentIndex = 1;
       applyActive(currentEl, currentIndex, false);
+      setActiveProjectIndex(displayIndex(1));
     }
 
     return () => {
@@ -442,21 +446,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Doodle: Disruptive - left of Web Artist, tilted, thin handwritten */}
-      <div
-        className="absolute left-[5%] lg:left-[8%] z-20 pointer-events-none"
-        style={{
-          fontFamily: "var(--font-caveat), cursive",
-          fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
-          fontWeight: 400,
-          color: "#c41e3a",
-          transform: "rotate(-12deg)",
-          top: "calc(42vh - 120px)",
-        }}
-      >
-        Disruptive
-      </div>
-
       {/* Hero Section */}
       <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative">
         <div className="max-w-6xl mx-auto relative z-10">
@@ -534,11 +523,6 @@ export default function Home() {
 
       {/* Projects Section - Draggable Slider */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
-        {/* Mobile: PROJECTS + WHAT I'VE BUILT at top left */}
-        <div className="lg:hidden mb-6">
-          <h2 className="text-3xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
-          <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
-        </div>
         <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay hidden lg:flex">
             <div className="slider__overlay-inner">
@@ -584,45 +568,53 @@ export default function Home() {
           <div className="slider__main">
             <div className="slider__wrap">
               <div ref={sliderListRef} data-slider="list" className="slider__list">
-                {projects.map((project, idx) => (
-                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 0 ? "active" : ""}`}>
+                {projects.map((_, idx) => {
+                  const project = projects[(idx - 1 + projects.length) % projects.length];
+                  return (
+                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 1 ? "active" : ""}`}>
                     <div className="slider__slide-inner">
-                      <a href={(project.link && project.link !== "#") ? project.link : project.github} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                      <div className="block w-full h-full">
                         <div className="slide__img-wrap slide__img-placeholder">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
                           <span className="slide__img-fallback hidden">{project.title}</span>
                         </div>
-                      </a>
+                      </div>
                       <div className="slide__caption">
                         <div className="slide__caption-dot" />
                         <p className="slide__caption-label">{project.title}</p>
                       </div>
                     </div>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           </div>
         </div>
-        {/* Mobile: 01/05 + arrows below cards */}
-        <div className="lg:hidden flex items-center gap-4 mt-6">
-          <div className="slider__overlay-count flex items-center gap-2">
-            <div className="slider__count-col">
-              <h2 data-slider-step-mobile className="slider__count-heading text-2xl">01</h2>
-            </div>
-            <div className="slider__count-divider" />
-            <div className="slider__count-col">
-              <h2 data-slider-total-mobile className="slider__count-heading text-2xl">00</h2>
-            </div>
+        {/* Mobile: PROJECTS + 01/05 + arrows en una sola fila debajo de cards */}
+        <div className="lg:hidden mt-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
+            <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
           </div>
-          <div className="slider__overlay-nav flex gap-4">
-            <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-12 h-12">
-              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-            </button>
-            <button type="button" aria-label="next" data-slider-next className="slider__btn w-12 h-12">
-              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-            </button>
+          <div className="flex items-center gap-3">
+            <div className="slider__overlay-count flex items-center gap-1">
+              <div className="slider__count-col">
+                <h2 data-slider-step-mobile className="slider__count-heading text-xl">01</h2>
+              </div>
+              <div className="slider__count-divider" />
+              <div className="slider__count-col">
+                <h2 data-slider-total-mobile className="slider__count-heading text-xl">00</h2>
+              </div>
+            </div>
+            <div className="slider__overlay-nav flex gap-2">
+              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-10 h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+              </button>
+              <button type="button" aria-label="next" data-slider-next className="slider__btn w-10 h-10 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+              </button>
+            </div>
           </div>
         </div>
         {/* Floating project info - syncs with active slide (on mobile: below arrows; on desktop: below cards) */}
@@ -734,19 +726,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Doodle: Stand out! - 400px below asterisk, tilted right, thin handwritten */}
-      <div
-        className="absolute right-[8%] top-[calc(15vh+800px)] z-[24] pointer-events-none"
-        style={{
-          fontFamily: "var(--font-caveat), cursive",
-          fontSize: "clamp(1.25rem, 3vw, 2rem)",
-          fontWeight: 400,
-          color: "#c41e3a",
-          transform: "rotate(8deg)",
-        }}
-      >
-        Stand out!
-      </div>
     </div>
   );
 }
