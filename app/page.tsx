@@ -122,150 +122,189 @@ export default function Home() {
   }, []);
 
   // Projects slider (horizontal loop, prev/next + click)
-  useEffect(() => {
-    const list = sliderListRef.current;
-    if (!list) return;
+useEffect(() => {
+  const list = sliderListRef.current;
+  if (!list) return;
 
-    const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
-    const nextBtns = document.querySelectorAll("[data-slider-next]");
-    const prevBtns = document.querySelectorAll("[data-slider-prev]");
-    const totalEl = document.querySelector("[data-slider-total]");
-    const totalElMobile = document.querySelector("[data-slider-total-mobile]");
-    const stepEl = document.querySelector("[data-slider-step]");
-    const stepElMobile = document.querySelector("[data-slider-step-mobile]");
-    const stepsParent = stepEl?.parentElement;
-    const stepsParentMobile = stepElMobile?.parentElement;
+  const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
+  const nextBtns = document.querySelectorAll("[data-slider-next]");
+  const prevBtns = document.querySelectorAll("[data-slider-prev]");
+  const totalEl = document.querySelector("[data-slider-total]");
+  const totalElMobile = document.querySelector("[data-slider-total-mobile]");
+  const stepEl = document.querySelector("[data-slider-step]");
+  const stepElMobile = document.querySelector("[data-slider-step-mobile]");
+  const stepsParent = stepEl?.parentElement;
+  const stepsParentMobile = stepElMobile?.parentElement;
 
-    let activeElement: HTMLElement | null = null;
-    const totalSlides = slides.length;
+  let activeElement: HTMLElement | null = null;
+  const totalSlides = slides.length;
 
-    [totalEl, totalElMobile].forEach((el) => { if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides); });
-    [stepEl, stepElMobile].forEach((sel) => {
-      const parent = sel?.parentElement;
-      if (parent && sel) {
-        parent.innerHTML = "";
-        slides.forEach((_, i) => {
-          const clone = sel.cloneNode(true) as HTMLElement;
-          clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
-          parent.appendChild(clone);
-        });
-      }
-    });
-    const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
+  [totalEl, totalElMobile].forEach((el) => {
+    if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
+  });
 
-    let currentEl: HTMLElement | null = null;
-    let currentIndex = 0;
-
-    const resolveActive = (el: HTMLElement) => el;
-
-    const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
-
-    const displayIndex = (loopIndex: number) => loopIndex;
-
-    const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
-      if (activeElement) activeElement.classList.remove("active");
-      const target = resolveActive(el);
-      target.classList.add("active");
-      activeElement = target;
-      const disp = displayIndex(index);
-      const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
-      if (stepsToAnimate.length && animateNumbers) {
-        gsap.to(stepsToAnimate, { y: `${-100 * disp}%`, ease: "power3", duration: 0.45 });
-      } else if (stepsToAnimate.length) {
-        gsap.set(stepsToAnimate, { y: `${-100 * disp}%` });
-      }
-    };
-
-    const loop = horizontalLoop(slides, {
-      paused: true,
-      draggable: false,
-      center: true,
-      onChange: (el, index) => {
-        currentEl = el;
-        currentIndex = index;
-        applyActive(el, index, true);
-        setActiveProjectIndex(displayIndex(index));
-      },
-    });
-    loop.toIndex(0, { duration: 0 });
-
-    const mapClickIndex = (i: number) => i;
-    slides.forEach((slide, i) => {
-      slide.addEventListener("click", () => {
-        if (slide.classList.contains("active")) return;
-        loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
+  [stepEl, stepElMobile].forEach((sel) => {
+    const parent = sel?.parentElement;
+    if (parent && sel) {
+      parent.innerHTML = "";
+      slides.forEach((_, i) => {
+        const clone = sel.cloneNode(true) as HTMLElement;
+        clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
+        parent.appendChild(clone);
       });
+    }
+  });
+
+  const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
+  const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
+
+  let currentEl: HTMLElement | null = null;
+  let currentIndex = 0;
+
+  const resolveActive = (el: HTMLElement) => el;
+
+  const displayIndex = (loopIndex: number) => loopIndex;
+
+  const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
+    if (activeElement) activeElement.classList.remove("active");
+
+    const target = resolveActive(el);
+    target.classList.add("active");
+    activeElement = target;
+
+    const disp = displayIndex(index);
+    const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
+
+    if (stepsToAnimate.length && animateNumbers) {
+      gsap.to(stepsToAnimate, {
+        y: `${-100 * disp}%`,
+        ease: "power3",
+        duration: 0.45,
+      });
+    } else if (stepsToAnimate.length) {
+      gsap.set(stepsToAnimate, { y: `${-100 * disp}%` });
+    }
+  };
+
+  const loop = horizontalLoop(slides, {
+    paused: true,
+    draggable: false,
+    center: true,
+    onChange: (el, index) => {
+      currentEl = el;
+      currentIndex = index;
+      applyActive(el, index, true);
+      setActiveProjectIndex(displayIndex(index));
+    },
+  });
+
+  // ✅ Start centered on the middle slide (fix offset)
+  const startIndex = 1;
+  loop.toIndex(startIndex, { duration: 0 });
+  applyActive(slides[startIndex], startIndex, false);
+  setActiveProjectIndex(displayIndex(startIndex));
+  currentEl = slides[startIndex];
+  currentIndex = startIndex;
+
+  const mapClickIndex = (i: number) => i;
+
+  slides.forEach((slide, i) => {
+    slide.addEventListener("click", () => {
+      if (slide.classList.contains("active")) return;
+      loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
     });
+  });
 
-    nextBtns.forEach((btn) => btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 })));
-    prevBtns.forEach((btn) => btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 })));
+  nextBtns.forEach((btn) =>
+    btn.addEventListener("click", () =>
+      loop.next({ ease: "power3", duration: 0.725 })
+    )
+  );
 
-    // Mouse drag for desktop - use slider section for full area
-    let dragCleanup: (() => void) | undefined;
-    const section = sliderSectionRef.current;
-    const wrap = list.parentElement;
-    if (section && wrap && typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
-      let startX = 0;
-      let startProgress = 0;
-      let isDragging = false;
-      const onMouseDown = (e: MouseEvent) => {
-        e.preventDefault();
-        startX = e.clientX;
-        startProgress = loop.progress();
-        isDragging = true;
-        gsap.killTweensOf(loop);
-        window.addEventListener("mousemove", onMouseMove);
-        window.addEventListener("mouseup", onMouseUp);
-      };
-      const onMouseMove = (e: MouseEvent) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const totalWidth = section.offsetWidth;
-        if (totalWidth > 0) {
-          const delta = -dx / totalWidth;
-          let p = startProgress + delta;
-          p = Math.max(0, Math.min(1, p));
-          loop.progress(p);
-          const idx = loop.closestIndex();
-          if (currentEl !== slides[idx]) {
-            currentEl = slides[idx];
-            currentIndex = idx;
-            applyActive(currentEl, currentIndex, true);
-            setActiveProjectIndex(displayIndex(currentIndex));
-          }
-        }
-      };
-      const onMouseUp = () => {
-        isDragging = false;
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-        const idx = loop.closestIndex(true);
-        loop.toIndex(idx, { ease: "power3", duration: 0.4 });
-      };
-      section.style.cursor = "grab";
-      section.addEventListener("mousedown", onMouseDown);
+  prevBtns.forEach((btn) =>
+    btn.addEventListener("click", () =>
+      loop.previous({ ease: "power3", duration: 0.725 })
+    )
+  );
 
-      dragCleanup = () => {
-        section.style.cursor = "";
-        section.removeEventListener("mousedown", onMouseDown);
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-    }
+  // Mouse drag for desktop - use slider section for full area
+  let dragCleanup: (() => void) | undefined;
+  const section = sliderSectionRef.current;
+  const wrap = list.parentElement;
 
-    if (!currentEl && slides[1]) {
-      currentEl = slides[1];
-      currentIndex = 1;
-      applyActive(currentEl, currentIndex, false);
-      setActiveProjectIndex(displayIndex(1));
-    }
+  if (
+    section &&
+    wrap &&
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 992px)").matches
+  ) {
+    let startX = 0;
+    let startProgress = 0;
+    let isDragging = false;
 
-    return () => {
-      nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
-      prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
-      dragCleanup?.();
+    const onMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      startX = e.clientX;
+      startProgress = loop.progress();
+      isDragging = true;
+      gsap.killTweensOf(loop);
+
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
     };
-  }, []);
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const dx = e.clientX - startX;
+      const totalWidth = section.offsetWidth;
+
+      if (totalWidth > 0) {
+        const delta = -dx / totalWidth;
+        let p = startProgress + delta;
+        p = Math.max(0, Math.min(1, p));
+
+        loop.progress(p);
+
+        const idx = loop.closestIndex();
+
+        if (currentEl !== slides[idx]) {
+          currentEl = slides[idx];
+          currentIndex = idx;
+          applyActive(currentEl, currentIndex, true);
+          setActiveProjectIndex(displayIndex(currentIndex));
+        }
+      }
+    };
+
+    const onMouseUp = () => {
+      isDragging = false;
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+
+      const idx = loop.closestIndex(true);
+      loop.toIndex(idx, { ease: "power3", duration: 0.4 });
+    };
+
+    section.style.cursor = "grab";
+    section.addEventListener("mousedown", onMouseDown);
+
+    dragCleanup = () => {
+      section.style.cursor = "";
+      section.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }
+
+  return () => {
+    nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+    prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+    dragCleanup?.();
+  };
+}, []);
+
 
   // Looping words for skills
   useEffect(() => {
@@ -522,13 +561,14 @@ export default function Home() {
 
       {/* Projects Section - Draggable Slider */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
-        {/* Mobile: solo PROJECTS + WHAT I'VE BUILT arriba del card - una sola vez */}
+        {/* Mobile: arriba de los cards SOLO PROJECTS + WHAT I'VE BUILT */}
         <div className="lg:hidden mb-4">
           <h2 className="text-lg font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
           <p className="text-[#737373] text-[10px] uppercase tracking-widest">What I&apos;ve built</p>
         </div>
         <div ref={sliderSectionRef} className="slider__section">
-          <div className="slider__overlay hidden lg:flex">
+          {/* Desktop only - overlay con PROJECTS + 01/05 + flechas */}
+          <div className="hidden lg:flex slider__overlay">
             <div className="slider__overlay-inner">
               <div className="slider__overlay-header">
                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
@@ -593,23 +633,23 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Debajo del card: mobile tiene 01/05+flechas a la izq; desktop solo info */}
+        {/* Debajo del card: mobile SOLO 01/05 + flechas; desktop solo info */}
         <div className="mt-4 lg:mt-12 flex flex-col lg:flex-row gap-6 items-start max-w-6xl mx-auto">
-          <div className="lg:hidden flex flex-col gap-1 flex-shrink-0">
+          <div className="lg:hidden flex flex-col gap-1 flex-shrink-0 slider-mobile-nav">
             <div className="slider__overlay-count flex items-center gap-0.5">
               <div className="slider__count-col">
-                <h2 data-slider-step-mobile className="slider__count-heading text-xs">01</h2>
+                <h2 data-slider-step-mobile className="slider__count-heading">01</h2>
               </div>
               <div className="slider__count-divider" />
               <div className="slider__count-col">
-                <h2 data-slider-total-mobile className="slider__count-heading text-xs">00</h2>
+                <h2 data-slider-total-mobile className="slider__count-heading">00</h2>
               </div>
             </div>
             <div className="slider__overlay-nav flex gap-1">
-              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-7 h-7">
+              <button type="button" aria-label="previous" data-slider-prev className="slider__btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
-              <button type="button" aria-label="next" data-slider-next className="slider__btn w-7 h-7 flex-shrink-0">
+              <button type="button" aria-label="next" data-slider-next className="slider__btn flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
               </button>
             </div>

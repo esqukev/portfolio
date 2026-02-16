@@ -880,8 +880,28 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     height: auto;
   }
 
+  .slider__overlay {
+    display: none !important;
+  }
   .slider__overlay-count .slider__count-col {
-    height: 1.5em;
+    height: 1em;
+    overflow: hidden;
+    line-height: 1;
+  }
+  .slider__overlay-count .slider__count-heading {
+    line-height: 1em;
+  }
+  .slider-mobile-nav .slider__count-heading {
+    font-size: 0.6rem;
+  }
+  .slider-mobile-nav .slider__count-divider {
+    height: 0.6em;
+  }
+  .slider-mobile-nav .slider__btn {
+    width: 1.4rem !important;
+    height: 1.4rem !important;
+    min-width: 1.4rem;
+    min-height: 1.4rem;
   }
 }
 
