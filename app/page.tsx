@@ -163,8 +163,7 @@ useEffect(() => {
 
   const resolveActive = (el: HTMLElement) => el;
 
-  // ✅ FIX: offset index mapping so center slide matches correct project
-  const displayIndex = (loopIndex: number) => (loopIndex + 2) % totalSlides;
+  const displayIndex = (loopIndex: number) => loopIndex;
 
   const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
     if (activeElement) activeElement.classList.remove("active");
@@ -174,7 +173,7 @@ useEffect(() => {
     activeElement = target;
 
     const disp = displayIndex(index);
-    const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
+    const stepsToAnimate = [...allSteps, ...allStepsMobile];
 
     if (stepsToAnimate.length && animateNumbers) {
       gsap.to(stepsToAnimate, {
@@ -197,7 +196,6 @@ useEffect(() => {
 
       applyActive(el, index, true);
 
-      // ✅ project info uses corrected index
       setActiveProjectIndex(displayIndex(index));
     },
   });
@@ -391,24 +389,6 @@ useEffect(() => {
       image: "/auction.png",
       link: "",
       github: "https://github.com/esqukev/auction.git",
-    },
-    {
-      id: 4,
-      title: "More projects will be displayed here",
-      description: "More projects will be displayed here.",
-      technologies: [],
-      image: "/project-3.jpg",
-      link: "#",
-      github: "#",
-    },
-    {
-      id: 5,
-      title: "More projects will be displayed here",
-      description: "More projects will be displayed here.",
-      technologies: [],
-      image: "/project-4.jpg",
-      link: "#",
-      github: "#",
     },
   ];
 
