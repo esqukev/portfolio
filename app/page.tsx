@@ -121,196 +121,193 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const list = sliderListRef.current;
-    if (!list) return;
-  
-    const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
-    const nextBtns = document.querySelectorAll("[data-slider-next]");
-    const prevBtns = document.querySelectorAll("[data-slider-prev]");
-    const totalEl = document.querySelector("[data-slider-total]");
-    const totalElMobile = document.querySelector("[data-slider-total-mobile]");
-    const stepEl = document.querySelector("[data-slider-step]");
-    const stepElMobile = document.querySelector("[data-slider-step-mobile]");
-  
-    const totalSlides = slides.length;
-  
-    // Total counter 05
-    [totalEl, totalElMobile].forEach((el) => {
-      if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
-    });
-  
-    // Clone steps (01,02,03...)
-    [stepEl, stepElMobile].forEach((sel) => {
-      const parent = sel?.parentElement;
-      if (!parent || !sel) return;
-  
+// Projects slider (horizontal loop, prev/next + click)
+useEffect(() => {
+  const list = sliderListRef.current;
+  if (!list) return;
+
+  const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
+  const nextBtns = document.querySelectorAll("[data-slider-next]");
+  const prevBtns = document.querySelectorAll("[data-slider-prev]");
+  const totalEl = document.querySelector("[data-slider-total]");
+  const totalElMobile = document.querySelector("[data-slider-total-mobile]");
+  const stepEl = document.querySelector("[data-slider-step]");
+  const stepElMobile = document.querySelector("[data-slider-step-mobile]");
+  const stepsParent = stepEl?.parentElement;
+  const stepsParentMobile = stepElMobile?.parentElement;
+
+  let activeElement: HTMLElement | null = null;
+  const totalSlides = slides.length;
+
+  [totalEl, totalElMobile].forEach((el) => {
+    if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
+  });
+
+  [stepEl, stepElMobile].forEach((sel) => {
+    const parent = sel?.parentElement;
+    if (parent && sel) {
       parent.innerHTML = "";
       slides.forEach((_, i) => {
         const clone = sel.cloneNode(true) as HTMLElement;
         clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
         parent.appendChild(clone);
       });
+    }
+  });
+
+  const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
+  const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
+
+  let currentEl: HTMLElement | null = null;
+  let currentIndex = 0;
+
+  const resolveActive = (el: HTMLElement) => el;
+
+  // ✅ FIX: offset index mapping so center slide matches correct project
+  const displayIndex = (loopIndex: number) => (loopIndex + 2) % totalSlides;
+
+  const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
+    if (activeElement) activeElement.classList.remove("active");
+
+    const target = resolveActive(el);
+    target.classList.add("active");
+    activeElement = target;
+
+    const disp = displayIndex(index);
+    const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
+
+    if (stepsToAnimate.length && animateNumbers) {
+      gsap.to(stepsToAnimate, {
+        y: `${-100 * disp}%`,
+        ease: "power3",
+        duration: 0.45,
+      });
+    } else if (stepsToAnimate.length) {
+      gsap.set(stepsToAnimate, { y: `${-100 * disp}%` });
+    }
+  };
+
+  const loop = horizontalLoop(slides, {
+    paused: true,
+    draggable: false,
+    center: true,
+    onChange: (el, index) => {
+      currentEl = el;
+      currentIndex = index;
+
+      applyActive(el, index, true);
+
+      // ✅ project info uses corrected index
+      setActiveProjectIndex(displayIndex(index));
+    },
+  });
+
+  // ✅ keep carousel start as 0
+  loop.toIndex(0, { duration: 0 });
+  applyActive(slides[0], 0, false);
+  setActiveProjectIndex(displayIndex(0));
+  currentEl = slides[0];
+  currentIndex = 0;
+
+  const mapClickIndex = (i: number) => i;
+
+  slides.forEach((slide, i) => {
+    slide.addEventListener("click", () => {
+      if (slide.classList.contains("active")) return;
+      loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
     });
-  
-    const stepsParent = stepEl?.parentElement;
-    const stepsParentMobile = stepElMobile?.parentElement;
-  
-    const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
-    const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
-  
-    let activeElement: HTMLElement | null = null;
-    let currentEl: HTMLElement | null = null;
-  
-    const setActiveUI = (el: HTMLElement, realIndex: number, animate = true) => {
-      if (activeElement) activeElement.classList.remove("active");
-      el.classList.add("active");
-      activeElement = el;
-  
-      const stepsToAnimate = allSteps.length ? allSteps : allStepsMobile;
-  
-      if (!stepsToAnimate.length) return;
-  
-      if (animate) {
-        gsap.to(stepsToAnimate, {
-          y: `${-100 * realIndex}%`,
-          ease: "power3",
-          duration: 0.45,
-        });
-      } else {
-        gsap.set(stepsToAnimate, {
-          y: `${-100 * realIndex}%`,
-        });
+  });
+
+  nextBtns.forEach((btn) =>
+    btn.addEventListener("click", () =>
+      loop.next({ ease: "power3", duration: 0.725 })
+    )
+  );
+
+  prevBtns.forEach((btn) =>
+    btn.addEventListener("click", () =>
+      loop.previous({ ease: "power3", duration: 0.725 })
+    )
+  );
+
+  // Mouse drag for desktop - use slider section for full area
+  let dragCleanup: (() => void) | undefined;
+  const section = sliderSectionRef.current;
+  const wrap = list.parentElement;
+
+  if (
+    section &&
+    wrap &&
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 992px)").matches
+  ) {
+    let startX = 0;
+    let startProgress = 0;
+    let isDragging = false;
+
+    const onMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      startX = e.clientX;
+      startProgress = loop.progress();
+      isDragging = true;
+      gsap.killTweensOf(loop);
+
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const dx = e.clientX - startX;
+      const totalWidth = section.offsetWidth;
+
+      if (totalWidth > 0) {
+        const delta = -dx / totalWidth;
+        let p = startProgress + delta;
+        p = Math.max(0, Math.min(1, p));
+
+        loop.progress(p);
+
+        const idx = loop.closestIndex();
+
+        if (currentEl !== slides[idx]) {
+          currentEl = slides[idx];
+          currentIndex = idx;
+          applyActive(currentEl, currentIndex, true);
+          setActiveProjectIndex(displayIndex(currentIndex));
+        }
       }
     };
-  
-    const loop = horizontalLoop(slides, {
-      paused: true,
-      draggable: false,
-      center: true,
-  
-      // 🚨 IMPORTANT: ignore the loop index, use real index
-      onChange: (el) => {
-        const realIndex = slides.indexOf(el);
-  
-        currentEl = el;
-        setActiveUI(el, realIndex, true);
-  
-        // ✅ This guarantees:
-        // slide 0 = Artist Press Kit + killer
-        // slide 1 = Brand Presentation + planbfx
-        // slide 2 = Auction + auction
-        setActiveProjectIndex(realIndex);
-      },
-    });
-  
-    // ✅ Start on Artist Press Kit (index 0)
-    loop.toIndex(0, { duration: 0 });
-  
-    if (slides[0]) {
-      currentEl = slides[0];
-      setActiveUI(slides[0], 0, false);
-      setActiveProjectIndex(0);
-    }
-  
-    // Click slide to go to it
-    slides.forEach((slide, i) => {
-      slide.addEventListener("click", () => {
-        if (slide.classList.contains("active")) return;
-        loop.toIndex(i, { ease: "power3", duration: 0.725 });
-      });
-    });
-  
-    // Buttons
-    nextBtns.forEach((btn) => {
-      btn.addEventListener("click", () =>
-        loop.next({ ease: "power3", duration: 0.725 })
-      );
-    });
-  
-    prevBtns.forEach((btn) => {
-      btn.addEventListener("click", () =>
-        loop.previous({ ease: "power3", duration: 0.725 })
-      );
-    });
-  
-    // Mouse drag (desktop)
-    let dragCleanup: (() => void) | undefined;
-    const section = sliderSectionRef.current;
-  
-    if (
-      section &&
-      typeof window !== "undefined" &&
-      window.matchMedia("(min-width: 992px)").matches
-    ) {
-      let startX = 0;
-      let startProgress = 0;
-      let isDragging = false;
-  
-      const onMouseDown = (e: MouseEvent) => {
-        e.preventDefault();
-        startX = e.clientX;
-        startProgress = loop.progress();
-        isDragging = true;
-  
-        gsap.killTweensOf(loop);
-  
-        window.addEventListener("mousemove", onMouseMove);
-        window.addEventListener("mouseup", onMouseUp);
-      };
-  
-      const onMouseMove = (e: MouseEvent) => {
-        if (!isDragging) return;
-  
-        const dx = e.clientX - startX;
-        const totalWidth = section.offsetWidth;
-  
-        if (totalWidth > 0) {
-          const delta = -dx / totalWidth;
-          let p = startProgress + delta;
-  
-          p = Math.max(0, Math.min(1, p));
-          loop.progress(p);
-  
-          const closest = loop.closestIndex();
-          const closestEl = slides[closest];
-  
-          if (closestEl && closestEl !== currentEl) {
-            currentEl = closestEl;
-  
-            const realIndex = slides.indexOf(closestEl);
-            setActiveUI(closestEl, realIndex, true);
-            setActiveProjectIndex(realIndex);
-          }
-        }
-      };
-  
-      const onMouseUp = () => {
-        isDragging = false;
-  
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-  
-        const idx = loop.closestIndex(true);
-        loop.toIndex(idx, { ease: "power3", duration: 0.4 });
-      };
-  
-      section.style.cursor = "grab";
-      section.addEventListener("mousedown", onMouseDown);
-  
-      dragCleanup = () => {
-        section.style.cursor = "";
-        section.removeEventListener("mousedown", onMouseDown);
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-    }
-  
-    return () => {
-      dragCleanup?.();
+
+    const onMouseUp = () => {
+      isDragging = false;
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+
+      const idx = loop.closestIndex(true);
+      loop.toIndex(idx, { ease: "power3", duration: 0.4 });
     };
-  }, []);
-  
+
+    section.style.cursor = "grab";
+    section.addEventListener("mousedown", onMouseDown);
+
+    dragCleanup = () => {
+      section.style.cursor = "";
+      section.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }
+
+  return () => {
+    nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+    prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
+    dragCleanup?.();
+  };
+}, []);
+
 
 
   // Looping words for skills
