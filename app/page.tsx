@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -224,13 +224,14 @@ export default function Home() {
 
 
 
-  // Button character stagger animation
-  useEffect(() => {
+  // Button character stagger animation (hero + contact buttons)
+  useLayoutEffect(() => {
     const offsetIncrement = 0.01;
     const buttons = document.querySelectorAll("[data-button-animate-chars]");
 
     buttons.forEach((button) => {
       const text = button.textContent ?? "";
+      if (!text.trim()) return;
       button.innerHTML = "";
 
       [...text].forEach((char, index) => {
@@ -270,13 +271,14 @@ export default function Home() {
       });
     };
 
+    const isMobile = () => window.innerWidth < 768;
     const moveWords = () => {
       currentIndex++;
 
       gsap.to(wordList, {
         yPercent: -wordHeight * currentIndex,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.85)",
+        duration: isMobile() ? 1.4 : 1.2,
+        ease: isMobile() ? "power2.inOut" : "elastic.out(1, 0.85)",
         onStart: updateEdgeWidth,
         onComplete: () => {
           if (currentIndex >= totalWords - 3) {
@@ -449,7 +451,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative">
+      <section ref={heroRef} id="home" className="pt-40 pb-32 px-6 lg:px-8 relative overflow-visible">
         <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.95] tracking-tight text-[#0a0a0a] animate-fade-in">
             Web{" "}
@@ -466,7 +468,7 @@ export default function Home() {
           <p className="mt-8 max-w-xl text-xl md:text-2xl text-[#737373] leading-relaxed animate-slide-left delay-100">
             I create bold, modern web experiences that look insane and perform even better — full-stack development with cutting-edge tech.
           </p>
-          <div className="mt-12 flex gap-4 animate-fade-in delay-400">
+          <div className="mt-12 flex gap-4 animate-fade-in delay-400 overflow-visible">
             <a href="#projects" className="btn-animate-chars btn-animate-chars--filled" aria-label="View Work">
               <div className="btn-animate-chars__bg" />
               <span data-button-animate-chars className="btn-animate-chars__text">View Work</span>
@@ -702,13 +704,13 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      {/* Asterisk - left edge, mirrored, 20% bigger */}
-      <div className="asterisk-hover-zone asterisk-left absolute left-0 top-[calc(15vh+400px)] w-40 h-40 z-[25] select-none" aria-hidden>
+      {/* Asterisk - right edge, scrolls with page, 400px lower */}
+      <div className="asterisk-hover-zone absolute right-0 top-[calc(15vh+400px)] w-32 h-32 z-[25] select-none" aria-hidden>
         <div
-          className="asterisk-left__char"
+          className="asterisk-right"
           style={{
             fontFamily: "var(--font-leckerli-one), cursive",
-            fontSize: "1440px",
+            fontSize: "1200px",
             lineHeight: 1,
           }}
         >
