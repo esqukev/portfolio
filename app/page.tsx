@@ -3,19 +3,32 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { horizontalLoop } from "@/lib/horizontal-loop";
 import { DRAW_SVG_VARIANTS } from "@/lib/draw-svg-variants";
+import { StarLoading } from "./components/star-loading";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
+  const [loadingDone, setLoadingDone] = useState(false);
   const wordRef = useRef<HTMLSpanElement>(null);
   const drawLineRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
   const sliderSectionRef = useRef<HTMLDivElement>(null);
+  const aboutP1Ref = useRef<HTMLParagraphElement>(null);
+  const aboutP2Ref = useRef<HTMLParagraphElement>(null);
+  const aboutWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = loadingDone ? "" : "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [loadingDone]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -126,41 +139,52 @@ export default function Home() {
     if (!wrapper) return;
 
     const slides = gsap.utils.toArray<HTMLElement>("[data-slider=\"slide\"]");
-    const nextButton = document.querySelector("[data-slider-button=\"next\"]");
-    const prevButton = document.querySelector("[data-slider-button=\"prev\"]");
-    const totalElement = document.querySelector("[data-slide-count=\"total\"]");
+    const nextButtons = document.querySelectorAll("[data-slider-button=\"next\"]");
+    const prevButtons = document.querySelectorAll("[data-slider-button=\"prev\"]");
+    const totalElements = document.querySelectorAll("[data-slide-count=\"total\"]");
+    const totalMobileElements = document.querySelectorAll("[data-slide-count=\"total-mobile\"]");
     const stepElement = document.querySelector("[data-slide-count=\"step\"]");
+    const stepMobileElement = document.querySelector("[data-slide-count=\"step-mobile\"]");
     const stepsParent = stepElement?.parentElement;
+    const stepsMobileParent = stepMobileElement?.parentElement;
 
     let activeElement: HTMLElement | null = null;
     const totalSlides = slides.length;
+    const totalStr = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
 
-    if (totalElement) totalElement.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
+    totalElements.forEach((el) => { el.textContent = totalStr; });
+    totalMobileElements.forEach((el) => { el.textContent = totalStr; });
 
-    if (stepsParent && stepElement) {
-      stepsParent.innerHTML = "";
+    function setupSteps(parent: Element | null, stepEl: Element | null) {
+      if (!parent || !stepEl) return [] as Element[];
+      const stepAttr = stepEl.getAttribute("data-slide-count") || "step";
+      const clones: HTMLElement[] = [];
       slides.forEach((_, index) => {
-        const stepClone = stepElement.cloneNode(true) as HTMLElement;
+        const stepClone = stepEl.cloneNode(true) as HTMLElement;
+        stepClone.setAttribute("data-slide-count", stepAttr);
         stepClone.textContent = index + 1 < 10 ? `0${index + 1}` : String(index + 1);
-        stepsParent.appendChild(stepClone);
+        clones.push(stepClone);
       });
+      parent.innerHTML = "";
+      clones.forEach((c) => parent.appendChild(c));
+      return clones;
     }
-    const allSteps = stepsParent ? stepsParent.querySelectorAll("[data-slide-count=\"step\"]") : [];
+
+    const allSteps = setupSteps(stepsParent ?? null, stepElement ?? null);
+    const allStepsMobile = setupSteps(stepsMobileParent ?? null, stepMobileElement ?? null);
 
     let currentEl: HTMLElement | null = null;
-    let currentIndex = 0;
 
     function applyActive(el: HTMLElement, index: number, animateNumbers = true) {
       if (activeElement) activeElement.classList.remove("active");
       el.classList.add("active");
       activeElement = el;
 
-      if (allSteps.length) {
-        if (animateNumbers) {
-          gsap.to(allSteps, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
-        } else {
-          gsap.set(allSteps, { y: `${-100 * index}%` });
-        }
+      const yVal = `${-100 * index}%`;
+      if (animateNumbers) {
+        gsap.to([...allSteps, ...allStepsMobile], { y: yVal, ease: "power3", duration: 0.45 });
+      } else {
+        gsap.set([...allSteps, ...allStepsMobile], { y: yVal });
       }
     }
 
@@ -170,7 +194,6 @@ export default function Home() {
       center: true,
       onChange: (element, index) => {
         currentEl = element;
-        currentIndex = index;
         applyActive(element, index, true);
         setActiveProjectIndex(index);
       },
@@ -183,12 +206,11 @@ export default function Home() {
       });
     });
 
-    nextButton?.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 }));
-    prevButton?.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 }));
+    nextButtons.forEach((btn) => btn.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 })));
+    prevButtons.forEach((btn) => btn.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 })));
 
     if (!currentEl && slides[0]) {
       currentEl = slides[0];
-      currentIndex = 0;
       applyActive(slides[0], 0, false);
       setActiveProjectIndex(0);
     }
@@ -250,6 +272,51 @@ export default function Home() {
     return () => { tl.kill(); };
   }, []);
 
+  // About text: fade-in + parallax on scroll
+  useEffect(() => {
+    const p1 = aboutP1Ref.current;
+    const p2 = aboutP2Ref.current;
+    const wrap = aboutWrapRef.current;
+    if (!p1 || !p2 || !wrap) return;
+
+    gsap.set([p1, p2], { opacity: 0, y: 60 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top 75%",
+        end: "bottom 25%",
+        scrub: 1.2,
+      },
+    });
+    tl.to(p1, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0)
+      .to(p2, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.15);
+
+    // Parallax: paragraphs move at different rates
+    gsap.to(p1, {
+      yPercent: -8,
+      ease: "none",
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5,
+      },
+    });
+    gsap.to(p2, {
+      yPercent: -4,
+      ease: "none",
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5,
+      },
+    });
+
+    return () => ScrollTrigger.getAll().forEach((t) => t.kill());
+  }, []);
+
   const projects = [
     {
       id: 1,
@@ -299,6 +366,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden font-sans" role="main">
+      <StarLoading onComplete={() => setLoadingDone(true)} />
+      <div style={{ opacity: loadingDone ? 1 : 0, pointerEvents: loadingDone ? "auto" : "none", transition: "opacity 0.5s ease" }}>
       {/* Nav - sticky at top, centered */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
         <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">
@@ -391,14 +460,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About - centered, large text, fade-in */}
-      <section ref={aboutRef} id="about" className="pt-32 pb-24 px-6 lg:px-8 relative">
-        <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight mb-5 animate-fade-in-slow text-center" style={{ opacity: 1 }}>
+      {/* About - centered, large text, fade-in + parallax */}
+      <section ref={aboutRef} id="about" className="pt-32 pb-24 px-6 lg:px-8 relative overflow-hidden">
+        <div ref={aboutWrapRef} className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+          <p ref={aboutP1Ref} className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight mb-5 text-center">
             I&apos;m a passionate web developer with expertise in building modern, scalable web applications.
             I love turning complex problems into simple, beautiful, and intuitive solutions.
           </p>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight animate-fade-in-slow delay-200 text-center" style={{ opacity: 1 }}>
+          <p ref={aboutP2Ref} className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#404040] leading-tight text-center">
             With a strong foundation in front-end and back-end technologies, I enjoy creating
             full-stack applications that deliver exceptional user experiences.
           </p>
@@ -433,6 +502,32 @@ export default function Home() {
 
       {/* Projects Section - GSAP Slider (from template) */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
+        {/* Mobile header: PROJECTS + count + arrows (hidden on desktop) */}
+        <div className="slider__mobile-header lg:hidden mb-6">
+          <div className="slider__mobile-header-top">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
+            <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
+          </div>
+          <div className="slider__mobile-controls">
+            <div className="slider__mobile-count" data-slide-count-mobile="wrap">
+              <div className="slider__count-col">
+                <h2 data-slide-count="step-mobile" className="slider__count-heading text-2xl">01</h2>
+              </div>
+              <div className="slider__count-divider" />
+              <div className="slider__count-col">
+                <h2 data-slide-count="total-mobile" className="slider__count-heading text-2xl">03</h2>
+              </div>
+            </div>
+            <div className="slider__mobile-nav">
+              <button type="button" aria-label="previous slide" data-slider-button="prev" className="slider__btn slider__btn--mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+              </button>
+              <button type="button" aria-label="next slide" data-slider-button="next" className="slider__btn slider__btn--mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
         <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay">
             <div className="slider__overlay-inner">
@@ -616,7 +711,7 @@ export default function Home() {
           *
         </div>
       </div>
-
+      </div>
     </div>
   );
 }

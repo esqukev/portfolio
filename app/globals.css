@@ -25,6 +25,12 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Star Dev Loading - disable scroll when loading */
+body:has(.star-loading.is--loading) {
+  height: 100dvh;
+  overflow: hidden;
+}
+
 
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
@@ -389,6 +395,204 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+/* Star Dev Loading animation */
+.star-loading {
+  color: #f4f4f4;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star-loading.is--loading {
+  pointer-events: auto;
+}
+
+.star-loading.is--loading.is--hidden {
+  display: none;
+}
+
+.star-loading.is--loading:not(.is--hidden) {
+  display: block;
+}
+
+.star-loading__loader {
+  color: #0a0a0a;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.star-loading__h1 {
+  white-space: nowrap;
+  justify-content: center;
+  font-size: clamp(5rem, 15vw, 12.5em);
+  font-weight: 500;
+  line-height: 0.75;
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.star-loading__start,
+.star-loading__end {
+  display: flex;
+  overflow: hidden;
+}
+
+.star-loading__start {
+  justify-content: flex-end;
+  width: 1.5256em;
+}
+
+.star-loading__end {
+  justify-content: flex-start;
+  width: 1.2em;
+}
+
+.star-loading__letter {
+  display: block;
+  position: relative;
+}
+
+.star-loading__box {
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 0;
+  display: flex;
+  position: relative;
+}
+
+.star-loading__box-inner {
+  justify-content: center;
+  align-items: center;
+  min-width: 1em;
+  height: 95%;
+  display: flex;
+  position: relative;
+}
+
+.star-loading__growing {
+  justify-content: center;
+  align-items: center;
+  width: 0%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+}
+
+.star-loading__growing-wrap {
+  width: 100%;
+  min-width: 1em;
+  height: 100%;
+  position: absolute;
+}
+
+.star-loading__cover {
+  pointer-events: none;
+  user-select: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.star-loading__content {
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 3em;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+
+.star-loading__bottom {
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.star-loading__h1--white {
+  color: #0a0a0a;
+}
+
+.star-loading__letter-white {
+  display: block;
+  position: relative;
+}
+
+/* Mobile Projects header - visible only < 992px */
+.slider__mobile-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.slider__mobile-header-top h2 {
+  margin: 0;
+}
+
+.slider__mobile-header-top p {
+  margin: 0.25rem 0 0;
+}
+
+.slider__mobile-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.slider__mobile-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.slider__mobile-count .slider__count-col {
+  height: 1.5em;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.slider__mobile-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider__btn--mobile {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+/* Desktop: align overlay count + nav in one row */
+.slider__overlay-inner {
+  gap: 0;
+}
+
+.slider__overlay-count,
+.slider__overlay-nav {
+  align-items: center;
 }
 
 /* Projects Slider - adapted from draggable horizontal loop */
@@ -806,6 +1010,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -929,7 +1136,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: skills looping words - larger container, [] fits text */
+/* Mobile: skills looping words - larger container, [] aligns with text */
 @media screen and (max-width: 768px) {
   .looping-words {
     height: 3.5em;
@@ -943,15 +1150,24 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
   .looping-words__list {
     min-width: max-content;
+    align-items: center;
+  }
+
+  .looping-words__item {
+    display: flex;
+    align-items: center;
   }
 
   .looping-words__p {
     padding: 0 0.5rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
   }
 
   .looping-words__selector {
-    height: 0.9em;
-    top: 48%;
+    height: 0.95em;
+    top: 50%;
     transform: translate(-50%, -50%);
   }
 

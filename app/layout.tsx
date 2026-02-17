@@ -25,8 +25,8 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Kevin Bermudez | Portfolio",
-  description: "Web Developer & Designer portfolio - Kevin Bermudez",
+  title: "Star Dev | Portfolio",
+  description: "Star Dev - Web Developer & Designer portfolio",
 };
 
 export default function RootLayout({
