@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.68);
+  --background: #f5f5f5;
+  --foreground: #0a0a0a;
   --accent: #171717;
-  --border: rgba(255, 255, 255, 0.15);
+  --muted: #737373;
+  --border: #e5e5e5;
 }
 
 @theme inline {
@@ -17,124 +17,24 @@
 
 * {
   scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: geometricPrecision;
 }
 
-/* ============================
-   PRO GALAXY BACKGROUND (FULL)
-   ============================ */
 body {
   margin: 0;
   padding: 0;
-  background: radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
-              radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.14), transparent 60%),
-              radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.12), transparent 60%),
-              linear-gradient(180deg, #050505 0%, #070707 45%, #0a0a0a 100%);
-  color: rgba(255, 255, 255, 0.92);
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
-}
-
-.portfolio-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.portfolio-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
-  opacity: 0.13;
-  mix-blend-mode: overlay;
-  animation: grainMove 7s steps(2) infinite;
-}
-
-@keyframes grainMove {
-  0% { transform: translate(0px, 0px); }
-  20% { transform: translate(-12px, 10px); }
-  40% { transform: translate(-8px, -14px); }
-  60% { transform: translate(14px, 6px); }
-  80% { transform: translate(8px, -10px); }
-  100% { transform: translate(0px, 0px); }
-}
-
-.bg-orb {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(80px);
-  opacity: 0.35;
-  transform: translate3d(0, 0, 0);
-  animation: floatOrbs 10s ease-in-out infinite alternate;
-}
-
-.bg-orb.orb-1 {
-  width: 520px;
-  height: 520px;
-  top: -160px;
-  left: -140px;
-  background: rgba(168, 85, 247, 0.45);
-}
-
-.bg-orb.orb-2 {
-  width: 620px;
-  height: 620px;
-  top: 10%;
-  right: -200px;
-  background: rgba(59, 130, 246, 0.35);
-  animation-delay: 1s;
-}
-
-.bg-orb.orb-3 {
-  width: 520px;
-  height: 520px;
-  bottom: -200px;
-  left: 20%;
-  background: rgba(236, 72, 153, 0.25);
-  animation-delay: 2s;
-}
-
-@keyframes floatOrbs {
-  0% { transform: translate3d(0px, 0px, 0px) scale(1); }
-  100% { transform: translate3d(60px, -40px, 0px) scale(1.08); }
-}
-
-.stars {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8) 40%, transparent 60%),
-    radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 40%, transparent 60%),
-    radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.6) 40%, transparent 60%),
-    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.35) 40%, transparent 60%),
-    radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.4) 40%, transparent 60%);
-  opacity: 0.3;
-}
-
-.vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.85) 100%);
-  opacity: 0.8;
 }
 
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
 
-/* Sections above background */
-section {
-  position: relative;
-  z-index: 2;
-}
-
 /* Button character stagger effect */
 .btn-animate-chars {
-  color: rgba(255, 255, 255, 0.92);
+  color: #0a0a0a;
   cursor: pointer;
   border-radius: 0.25em;
   justify-content: center;
@@ -150,20 +50,20 @@ section {
 }
 
 .btn-animate-chars--filled {
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #0a0a0a;
-  border-color: rgba(255, 255, 255, 0.95);
+  background-color: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
 }
 
 .btn-animate-chars--outline {
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #0a0a0a;
+  border: 1px solid #0a0a0a;
 }
 
 .btn-animate-chars--outline:hover {
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.92);
+  color: #0a0a0a;
 }
 
 .btn-animate-chars__text {
@@ -197,7 +97,7 @@ section {
 }
 
 .btn-animate-chars--filled .btn-animate-chars__bg {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: #262626;
 }
 
 .btn-animate-chars--outline .btn-animate-chars__bg {
@@ -335,36 +235,34 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   pointer-events: auto;
 }
 
-/* Custom scrollbar - dark theme */
+/* Custom scrollbar - Osmo style */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
+  background: #e5e5e5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: #a3a3a3;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: #737373;
 }
 
-/* Osmo style - clean cards (seamless on galaxy) */
+/* Osmo style - clean cards */
 .osmo-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: #fff;
   border: 1px solid var(--border);
   transition: all 0.25s ease;
 }
 
 .osmo-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  border-color: #a3a3a3;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
 @keyframes marquee {
@@ -531,7 +429,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   font-size: 0.9em;
   font-weight: 700;
   line-height: 1.1;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
   letter-spacing: -0.02em;
 }
 
@@ -562,11 +460,11 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 .asterisk-left:hover .asterisk-left__char {
   opacity: 0.16;
-  transform: scaleX(-1) translate(calc(-50% + 4px), calc(-50% + 200px)) rotate(40deg) scale(1.06);
+  transform: scaleX(-1) translate(calc(-50% + 4px), calc(-50% + 200px)) rotate(46deg) scale(1.06);
 }
 
 .asterisk-right {
-  color: rgba(255, 255, 255, 0.5);
+  color: #000;
   opacity: 0.08;
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-22deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -577,7 +475,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .asterisk-left .asterisk-left__char {
-  color: rgba(255, 255, 255, 0.5);
+  color: #000;
   opacity: 0.08;
   transform: scaleX(-1) translate(calc(-50% + 4px), calc(-50% + 200px)) rotate(40deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -670,16 +568,14 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   align-items: center;
 }
 
-/* Projects Slider - seamless on galaxy */
+/* Projects Slider - adapted from draggable horizontal loop */
 .slider__section {
   justify-content: center;
   align-items: center;
   min-height: 50vh;
   display: flex;
   position: relative;
-  background: transparent;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: #f5f5f5;
 }
 
 .slider__main {
@@ -839,10 +735,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 .slider__overlay {
   z-index: 2;
-  color: rgba(255, 255, 255, 0.92);
-  background: transparent;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  color: #0a0a0a;
+  background-image: linear-gradient(90deg, #f5f5f5 85%, transparent);
   justify-content: flex-start;
   align-items: center;
   width: 36vw;
@@ -893,7 +787,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .slider__count-divider {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #525252;
   width: 2px;
   height: 0.75em;
   transform: rotate(15deg);
@@ -906,9 +800,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .slider__btn {
-  color: rgba(255, 255, 255, 0.92);
+  color: #0a0a0a;
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.4em;
   justify-content: center;
   align-items: center;
@@ -941,8 +835,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .slider__btn-overlay-corner {
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
   border-top-left-radius: 0.4em;
   width: 1em;
   height: 1em;
@@ -1006,7 +900,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills (seamless on galaxy) */
+/* Looping words - Skills (tamaño reducido) */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
@@ -1015,7 +909,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   font-weight: 700;
   line-height: 0.9;
   position: relative;
-  color: rgba(255, 255, 255, 0.92);
+  color: #0a0a0a;
   width: 100%;
 }
 
@@ -1041,10 +935,10 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .looping-words__fade {
   pointer-events: none;
   background-image: linear-gradient(
-    #050505 0%,
-    transparent 30%,
-    transparent 70%,
-    #050505 100%
+    #f5f5f5 5%,
+    rgba(245, 245, 245, 0) 40%,
+    rgba(245, 245, 245, 0) 60%,
+    #f5f5f5 95%
   );
   width: 100%;
   height: 100%;
@@ -1106,28 +1000,28 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   margin-bottom: 0.5rem;
 }
 
-/* Project info - floating text */
+/* Project info - floating text, same color as hero paragraph (#737373) */
 .project-info-floating {
   animation: projectInfoFade 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
 }
 
 .project-info-floating h3 {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--muted);
 }
 
 .project-info-floating p {
   margin-bottom: 1rem;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
   font-size: 0.875rem;
   line-height: 1.6;
 }
 
 .project-info-floating .flex.gap-6 a {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--muted);
   font-size: 0.875rem;
 }
 
@@ -1198,7 +1092,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     position: relative;
     inset: auto;
     padding-bottom: 2em;
-    background: transparent;
+    background-image: linear-gradient(180deg, #f5f5f5 85%, transparent);
   }
   .slider__overlay-inner {
     grid-column-gap: 2em;
