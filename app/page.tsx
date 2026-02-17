@@ -147,8 +147,8 @@ export default function Home() {
     totalElements.forEach((el) => { el.textContent = totalStr; });
     totalMobileElements.forEach((el) => { el.textContent = totalStr; });
 
-    function setupSteps(parent: Element | null, stepEl: Element | null) {
-      if (!parent || !stepEl) return [] as Element[];
+    function setupSteps(parent: Element | null, stepEl: Element | null, useWrapper = false) {
+      if (!parent || !stepEl) return { elements: [] as Element[], wrapper: null as Element | null };
       const stepAttr = stepEl.getAttribute("data-slide-count") || "step";
       const clones: HTMLElement[] = [];
       slides.forEach((_, index) => {
@@ -158,12 +158,22 @@ export default function Home() {
         clones.push(stepClone);
       });
       parent.innerHTML = "";
+
+      if (useWrapper) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "slider__step-wrapper";
+        clones.forEach((c) => wrapper.appendChild(c));
+        parent.appendChild(wrapper);
+        return { elements: [], wrapper };
+      }
       clones.forEach((c) => parent.appendChild(c));
-      return clones;
+      return { elements: clones, wrapper: null };
     }
 
-    const allSteps = setupSteps(stepsParent ?? null, stepElement ?? null);
-    const allStepsMobile = setupSteps(stepsMobileParent ?? null, stepMobileElement ?? null);
+    const desktopSteps = setupSteps(stepsParent ?? null, stepElement ?? null, false);
+    const mobileSteps = setupSteps(stepsMobileParent ?? null, stepMobileElement ?? null, true);
+    const allSteps = desktopSteps.elements;
+    const mobileWrapper = mobileSteps.wrapper;
 
     let currentEl: HTMLElement | null = null;
 
@@ -173,10 +183,13 @@ export default function Home() {
       activeElement = el;
 
       const yVal = `${-100 * index}%`;
+      const targets: (Element | object)[] = [...allSteps];
+      if (mobileWrapper) targets.push(mobileWrapper);
+
       if (animateNumbers) {
-        gsap.to([...allSteps, ...allStepsMobile], { y: yVal, ease: "power3", duration: 0.45 });
+        gsap.to(targets, { y: yVal, ease: "power3", duration: 0.45 });
       } else {
-        gsap.set([...allSteps, ...allStepsMobile], { y: yVal });
+        gsap.set(targets, { y: yVal });
       }
     }
 
@@ -209,6 +222,25 @@ export default function Home() {
   }, []);
 
 
+
+  // Button character stagger animation
+  useEffect(() => {
+    const offsetIncrement = 0.01;
+    const buttons = document.querySelectorAll("[data-button-animate-chars]");
+
+    buttons.forEach((button) => {
+      const text = button.textContent ?? "";
+      button.innerHTML = "";
+
+      [...text].forEach((char, index) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        (span as HTMLElement).style.transitionDelay = `${index * offsetIncrement}s`;
+        if (char === " ") (span as HTMLElement).style.whiteSpace = "pre";
+        button.appendChild(span);
+      });
+    });
+  }, []);
 
   // Looping words for skills
   useEffect(() => {
@@ -434,17 +466,13 @@ export default function Home() {
             I create bold, modern web experiences that look insane and perform even better — full-stack development with cutting-edge tech.
           </p>
           <div className="mt-12 flex gap-4 animate-fade-in delay-400">
-            <a
-              href="#projects"
-              className="inline-block px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-all duration-300 ease-out"
-            >
-              View Work
+            <a href="#projects" className="btn-animate-chars btn-animate-chars--filled" aria-label="View Work">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">View Work</span>
             </a>
-            <a
-              href="#contact"
-              className="inline-block px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
-            >
-              Get in Touch
+            <a href="#contact" className="btn-animate-chars btn-animate-chars--outline" aria-label="Get in Touch">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">Get in Touch</span>
             </a>
           </div>
         </div>
@@ -563,8 +591,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Mobile: count 01/03 + arrows BELOW slider (same logic as desktop, 2 numbers only) */}
-        <div className="slider__mobile-footer lg:hidden mt-6 flex items-center justify-center gap-6">
+        {/* Mobile: count 01/03 + arrows BELOW slider, left-aligned (same logic as desktop, 2 numbers only) */}
+        <div className="slider__mobile-footer lg:hidden mt-6 flex items-center justify-start gap-6">
           <div className="slider__overlay-count slider__overlay-count--mobile">
             <div className="slider__count-col">
               <h2 data-slide-count="step-mobile" className="slider__count-heading">01</h2>
@@ -634,35 +662,21 @@ export default function Home() {
             Always open to discussing new projects, creative ideas, or job opportunities.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button
-              onClick={handleSendEmail}
-              className="px-6 py-3 bg-[#0a0a0a] text-white text-sm font-medium rounded-lg hover:bg-[#262626] transition-all duration-300 ease-out"
-            >
-              Send Email
+            <button type="button" onClick={handleSendEmail} className="btn-animate-chars btn-animate-chars--filled" aria-label="Send Email">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">Send Email</span>
             </button>
-            <a
-              href="https://wa.me/50661371097"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
-            >
-              WhatsApp
+            <a href="https://wa.me/50661371097" target="_blank" rel="noopener noreferrer" className="btn-animate-chars btn-animate-chars--outline" aria-label="WhatsApp">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">WhatsApp</span>
             </a>
-            <a
-              href="https://github.com/esqukev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
-            >
-              GitHub
+            <a href="https://github.com/esqukev" target="_blank" rel="noopener noreferrer" className="btn-animate-chars btn-animate-chars--outline" aria-label="GitHub">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">GitHub</span>
             </a>
-            <a
-              href="https://www.linkedin.com/in/kevin-bermudez-831442241/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-300 ease-out"
-            >
-              LinkedIn
+            <a href="https://www.linkedin.com/in/kevin-bermudez-831442241/" target="_blank" rel="noopener noreferrer" className="btn-animate-chars btn-animate-chars--outline" aria-label="LinkedIn">
+              <div className="btn-animate-chars__bg" />
+              <span data-button-animate-chars className="btn-animate-chars__text">LinkedIn</span>
             </a>
           </div>
         </div>
