@@ -897,14 +897,14 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills (desktop 15% smaller, mobile fixes) */
+/* Looping words - Skills (tamaño reducido) */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  font-size: clamp(2.55rem, 6.8vw, 8.5em);
+  font-size: clamp(1.75rem, 5vw, 5em);
   font-weight: 700;
-  line-height: 1;
+  line-height: 0.9;
   position: relative;
   color: #0a0a0a;
   width: 100%;
@@ -921,13 +921,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   list-style: none;
   display: flex;
   position: relative;
-}
-
-.looping-words__item,
-.looping-words__p {
-  line-height: 1 !important;
-  display: inline-flex;
-  align-items: center;
 }
 
 .looping-words__item {
@@ -986,8 +979,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
 }
 
 .looping-words__containers {
@@ -1110,29 +1101,20 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: skills - same baseline, seamless loop, aligned brackets */
+/* Mobile: skills looping words */
 @media screen and (max-width: 768px) {
   .looping-words {
     height: 2.7em;
-    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-size: clamp(1.5rem, 8vw, 2.75rem);
     max-width: 100%;
-    line-height: 1;
   }
 
   .looping-words__containers {
     min-width: 100%;
-    overflow: hidden;
   }
 
   .looping-words__list {
     min-width: max-content;
-    align-items: center;
-  }
-
-  .looping-words__item,
-  .looping-words__p {
-    line-height: 1 !important;
-    display: inline-flex;
     align-items: center;
   }
 
@@ -1141,12 +1123,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .looping-words__selector {
-    height: 0.95em;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: grid;
-    place-items: center;
+    height: 0.9em;
   }
 
   .looping-words__edge {
