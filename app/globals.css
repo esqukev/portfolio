@@ -897,14 +897,14 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills (from template, adapted) */
+/* Looping words - Skills (desktop 15% smaller, mobile fixes) */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  font-size: clamp(3rem, 8vw, 10em);
+  font-size: clamp(2.55rem, 6.8vw, 8.5em);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 1;
   position: relative;
   color: #0a0a0a;
   width: 100%;
@@ -921,6 +921,13 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   list-style: none;
   display: flex;
   position: relative;
+}
+
+.looping-words__item,
+.looping-words__p {
+  line-height: 1 !important;
+  display: inline-flex;
+  align-items: center;
 }
 
 .looping-words__item {
@@ -979,6 +986,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
 }
 
 .looping-words__containers {
@@ -1101,16 +1110,18 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: skills looping words - larger container, [] aligns with text */
+/* Mobile: skills - same baseline, seamless loop, aligned brackets */
 @media screen and (max-width: 768px) {
   .looping-words {
-    height: 3.5em;
-    font-size: clamp(2.5rem, 12vw, 4rem);
+    height: 2.7em;
+    font-size: clamp(2rem, 10vw, 3.5rem);
     max-width: 100%;
+    line-height: 1;
   }
 
   .looping-words__containers {
     min-width: 100%;
+    overflow: hidden;
   }
 
   .looping-words__list {
@@ -1118,22 +1129,24 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     align-items: center;
   }
 
-  .looping-words__item {
-    display: flex;
+  .looping-words__item,
+  .looping-words__p {
+    line-height: 1 !important;
+    display: inline-flex;
     align-items: center;
   }
 
   .looping-words__p {
     padding: 0 0.5rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
   }
 
   .looping-words__selector {
-    height: 0.9em;
+    height: 0.95em;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
   }
 
   .looping-words__edge {

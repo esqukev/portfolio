@@ -703,8 +703,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      {/* Asterisk - left edge, mirrored, 20% bigger */}
-      <div className="asterisk-hover-zone asterisk-left absolute left-0 top-[calc(15vh+400px)] w-40 h-40 z-[25] select-none" aria-hidden>
+      {/* Asterisk - left edge, Contact area, mirrored 20% bigger, mitad pantalla vertical */}
+      <div className="asterisk-hover-zone asterisk-left absolute left-0 top-[80%] w-40 h-40 z-[25] select-none" aria-hidden>
         <div
           className="asterisk-left__char"
           style={{
