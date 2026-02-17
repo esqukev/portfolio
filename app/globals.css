@@ -25,13 +25,6 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Star Dev Loading - disable scroll when loading */
-body:has(.star-loading.is--loading) {
-  height: 100dvh;
-  overflow: hidden;
-}
-
-
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
@@ -397,191 +390,42 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   top: 0;
 }
 
-/* Star Dev Loading animation */
-.star-loading {
-  color: #f4f4f4;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.star-loading.is--loading {
-  pointer-events: auto;
-}
-
-.star-loading.is--loading.is--hidden {
-  display: none;
-}
-
-.star-loading.is--loading:not(.is--hidden) {
-  display: block;
-}
-
-.star-loading__loader {
-  color: #0a0a0a;
+/* Mobile Projects footer - count + arrows below slider, same logic as desktop (2 numbers only) */
+.slider__mobile-footer {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-}
-
-.star-loading__h1 {
-  white-space: nowrap;
-  justify-content: center;
-  font-size: clamp(5rem, 15vw, 12.5em);
-  font-weight: 500;
-  line-height: 0.75;
-  display: flex;
-  position: relative;
-  align-items: center;
-}
-
-.star-loading__start,
-.star-loading__end {
-  display: flex;
-  overflow: hidden;
-}
-
-.star-loading__start {
-  justify-content: flex-end;
-  width: 1.5256em;
-}
-
-.star-loading__end {
-  justify-content: flex-start;
-  width: 1.2em;
-}
-
-.star-loading__letter {
-  display: block;
-  position: relative;
-}
-
-.star-loading__box {
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  width: 0;
-  display: flex;
-  position: relative;
-}
-
-.star-loading__box-inner {
-  justify-content: center;
-  align-items: center;
-  min-width: 1em;
-  height: 95%;
-  display: flex;
-  position: relative;
-}
-
-.star-loading__growing {
-  justify-content: center;
-  align-items: center;
-  width: 0%;
-  height: 100%;
-  display: flex;
-  position: absolute;
-  overflow: hidden;
-}
-
-.star-loading__growing-wrap {
-  width: 100%;
-  min-width: 1em;
-  height: 100%;
-  position: absolute;
-}
-
-.star-loading__cover {
-  pointer-events: none;
-  user-select: none;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.star-loading__content {
-  flex-flow: column;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  min-height: 100dvh;
-  padding: 3em;
-  display: flex;
-  position: absolute;
-  inset: 0;
-}
-
-.star-loading__bottom {
-  justify-content: flex-start;
-  align-items: flex-end;
-  width: 100%;
-  display: flex;
-  position: relative;
-  overflow: hidden;
-}
-
-.star-loading__h1--white {
-  color: #0a0a0a;
-}
-
-.star-loading__letter-white {
-  display: block;
-  position: relative;
-}
-
-/* Mobile Projects header - visible only < 992px */
-.slider__mobile-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.slider__mobile-header-top h2 {
-  margin: 0;
-}
-
-.slider__mobile-header-top p {
-  margin: 0.25rem 0 0;
-}
-
-.slider__mobile-controls {
-  display: flex;
-  align-items: center;
   gap: 1.5rem;
 }
 
-.slider__mobile-count {
+.slider__overlay-count--mobile {
+  font-size: 2.5rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2em;
 }
 
-.slider__mobile-count .slider__count-col {
-  height: 1.5em;
+.slider__overlay-count--mobile .slider__count-col {
+  height: 1em;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.slider__mobile-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.slider__overlay-count--mobile .slider__count-heading {
+  width: 2ch;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.slider__overlay-count--mobile .slider__count-divider {
+  height: 0.75em;
 }
 
 .slider__btn--mobile {
-  width: 3rem;
-  height: 3rem;
+  width: 3.5rem;
+  height: 3.5rem;
   flex-shrink: 0;
 }
 
@@ -1005,11 +849,11 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .looping-words__selector {
   pointer-events: none;
   width: 100%;
-  height: 0.9em;
+  height: 0.85em;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -52%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1166,9 +1010,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .looping-words__selector {
-    height: 0.95em;
+    height: 0.9em;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -52%);
   }
 
   .looping-words__edge {

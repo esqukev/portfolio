@@ -6,8 +6,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { horizontalLoop } from "@/lib/horizontal-loop";
 import { DRAW_SVG_VARIANTS } from "@/lib/draw-svg-variants";
-import { StarLoading } from "./components/star-loading";
-
 gsap.registerPlugin(ScrollTrigger);
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
@@ -15,7 +13,6 @@ const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
-  const [loadingDone, setLoadingDone] = useState(false);
   const wordRef = useRef<HTMLSpanElement>(null);
   const drawLineRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
@@ -24,11 +21,6 @@ export default function Home() {
   const aboutP1Ref = useRef<HTMLParagraphElement>(null);
   const aboutP2Ref = useRef<HTMLParagraphElement>(null);
   const aboutWrapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    document.body.style.overflow = loadingDone ? "" : "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, [loadingDone]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -366,8 +358,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden font-sans" role="main">
-      <StarLoading onComplete={() => setLoadingDone(true)} />
-      <div style={{ opacity: loadingDone ? 1 : 0, pointerEvents: loadingDone ? "auto" : "none", transition: "opacity 0.5s ease" }}>
       {/* Nav - sticky at top, centered */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
         <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">
@@ -502,31 +492,10 @@ export default function Home() {
 
       {/* Projects Section - GSAP Slider (from template) */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
-        {/* Mobile header: PROJECTS + count + arrows (hidden on desktop) */}
-        <div className="slider__mobile-header lg:hidden mb-6">
-          <div className="slider__mobile-header-top">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
-            <p className="text-[#737373] text-xs uppercase tracking-widest">What I&apos;ve built</p>
-          </div>
-          <div className="slider__mobile-controls">
-            <div className="slider__mobile-count" data-slide-count-mobile="wrap">
-              <div className="slider__count-col">
-                <h2 data-slide-count="step-mobile" className="slider__count-heading text-2xl">01</h2>
-              </div>
-              <div className="slider__count-divider" />
-              <div className="slider__count-col">
-                <h2 data-slide-count="total-mobile" className="slider__count-heading text-2xl">03</h2>
-              </div>
-            </div>
-            <div className="slider__mobile-nav">
-              <button type="button" aria-label="previous slide" data-slider-button="prev" className="slider__btn slider__btn--mobile">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-              </button>
-              <button type="button" aria-label="next slide" data-slider-button="next" className="slider__btn slider__btn--mobile">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-              </button>
-            </div>
-          </div>
+        {/* Mobile: PROJECTS header above slider (overlay hidden on mobile) */}
+        <div className="lg:hidden mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0a0a0a] uppercase">PROJECTS</h2>
+          <p className="text-[#737373] text-xs uppercase tracking-widest mt-1">What I&apos;ve built</p>
         </div>
         <div ref={sliderSectionRef} className="slider__section">
           <div className="slider__overlay">
@@ -592,6 +561,26 @@ export default function Home() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+        {/* Mobile: count 01/03 + arrows BELOW slider (same logic as desktop, 2 numbers only) */}
+        <div className="slider__mobile-footer lg:hidden mt-6 flex items-center justify-center gap-6">
+          <div className="slider__overlay-count slider__overlay-count--mobile">
+            <div className="slider__count-col">
+              <h2 data-slide-count="step-mobile" className="slider__count-heading">01</h2>
+            </div>
+            <div className="slider__count-divider" />
+            <div className="slider__count-col">
+              <h2 data-slide-count="total-mobile" className="slider__count-heading">03</h2>
+            </div>
+          </div>
+          <div className="slider__overlay-nav">
+            <button type="button" aria-label="previous slide" data-slider-button="prev" className="slider__btn slider__btn--mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+            </button>
+            <button type="button" aria-label="next slide" data-slider-button="next" className="slider__btn slider__btn--mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
+            </button>
           </div>
         </div>
         <div className="mt-4 lg:mt-12 max-w-6xl mx-auto">
@@ -710,7 +699,6 @@ export default function Home() {
         >
           *
         </div>
-      </div>
       </div>
     </div>
   );
