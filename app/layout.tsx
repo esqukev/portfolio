@@ -36,11 +36,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      {/* suppressHydrationWarning: Prevents hydration errors caused by browser extensions that modify the DOM */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${leckerliOne.variable} ${caveat.variable} antialiased`}
         suppressHydrationWarning
       >
-        <div className="site-bg" />
         {children}
       </body>
     </html>
