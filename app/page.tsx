@@ -15,7 +15,6 @@ export default function Home() {
   const drawLineRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
-  const sliderListRef = useRef<HTMLDivElement>(null);
   const sliderSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -121,190 +120,79 @@ export default function Home() {
     };
   }, []);
 
-// Projects slider (horizontal loop, prev/next + click)
-useEffect(() => {
-  const list = sliderListRef.current;
-  if (!list) return;
+  // Projects slider - GSAP horizontal loop (from template)
+  useEffect(() => {
+    const wrapper = document.querySelector("[data-slider=\"list\"]");
+    if (!wrapper) return;
 
-  const slides = gsap.utils.toArray<HTMLElement>("[data-slider-slide]");
-  const nextBtns = document.querySelectorAll("[data-slider-next]");
-  const prevBtns = document.querySelectorAll("[data-slider-prev]");
-  const totalEl = document.querySelector("[data-slider-total]");
-  const totalElMobile = document.querySelector("[data-slider-total-mobile]");
-  const stepEl = document.querySelector("[data-slider-step]");
-  const stepElMobile = document.querySelector("[data-slider-step-mobile]");
-  const stepsParent = stepEl?.parentElement;
-  const stepsParentMobile = stepElMobile?.parentElement;
+    const slides = gsap.utils.toArray<HTMLElement>("[data-slider=\"slide\"]");
+    const nextButton = document.querySelector("[data-slider-button=\"next\"]");
+    const prevButton = document.querySelector("[data-slider-button=\"prev\"]");
+    const totalElement = document.querySelector("[data-slide-count=\"total\"]");
+    const stepElement = document.querySelector("[data-slide-count=\"step\"]");
+    const stepsParent = stepElement?.parentElement;
 
-  let activeElement: HTMLElement | null = null;
-  const totalSlides = slides.length;
+    let activeElement: HTMLElement | null = null;
+    const totalSlides = slides.length;
 
-  [totalEl, totalElMobile].forEach((el) => {
-    if (el) el.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
-  });
+    if (totalElement) totalElement.textContent = totalSlides < 10 ? `0${totalSlides}` : String(totalSlides);
 
-  [stepEl, stepElMobile].forEach((sel) => {
-    const parent = sel?.parentElement;
-    if (parent && sel) {
-      parent.innerHTML = "";
-      slides.forEach((_, i) => {
-        const clone = sel.cloneNode(true) as HTMLElement;
-        clone.textContent = i + 1 < 10 ? `0${i + 1}` : String(i + 1);
-        parent.appendChild(clone);
+    if (stepsParent && stepElement) {
+      stepsParent.innerHTML = "";
+      slides.forEach((_, index) => {
+        const stepClone = stepElement.cloneNode(true) as HTMLElement;
+        stepClone.textContent = index + 1 < 10 ? `0${index + 1}` : String(index + 1);
+        stepsParent.appendChild(stepClone);
       });
     }
-  });
+    const allSteps = stepsParent ? stepsParent.querySelectorAll("[data-slide-count=\"step\"]") : [];
 
-  const allSteps = stepsParent?.querySelectorAll("[data-slider-step]") ?? [];
-  const allStepsMobile = stepsParentMobile?.querySelectorAll("[data-slider-step-mobile]") ?? [];
+    let currentEl: HTMLElement | null = null;
+    let currentIndex = 0;
 
-  let currentEl: HTMLElement | null = null;
-  let currentIndex = 0;
+    function applyActive(el: HTMLElement, index: number, animateNumbers = true) {
+      if (activeElement) activeElement.classList.remove("active");
+      el.classList.add("active");
+      activeElement = el;
 
-  const resolveActive = (el: HTMLElement) => el;
-
-  const displayIndex = (loopIndex: number) => loopIndex;
-
-  const applyActive = (el: HTMLElement, index: number, animateNumbers = true) => {
-    if (activeElement) activeElement.classList.remove("active");
-
-    const target = resolveActive(el);
-    target.classList.add("active");
-    activeElement = target;
-
-    const disp = displayIndex(index);
-    const stepsToAnimate = [...allSteps, ...allStepsMobile];
-
-    if (stepsToAnimate.length && animateNumbers) {
-      gsap.to(stepsToAnimate, {
-        y: `${-100 * disp}%`,
-        ease: "power3",
-        duration: 0.45,
-      });
-    } else if (stepsToAnimate.length) {
-      gsap.set(stepsToAnimate, { y: `${-100 * disp}%` });
-    }
-  };
-
-  const loop = horizontalLoop(slides, {
-    paused: true,
-    draggable: false,
-    center: true,
-    onChange: (el, index) => {
-      currentEl = el;
-      currentIndex = index;
-
-      applyActive(el, index, true);
-
-      setActiveProjectIndex(displayIndex(index));
-    },
-  });
-
-  // ✅ keep carousel start as 0
-  loop.toIndex(0, { duration: 0 });
-  applyActive(slides[0], 0, false);
-  setActiveProjectIndex(displayIndex(0));
-  currentEl = slides[0];
-  currentIndex = 0;
-
-  const mapClickIndex = (i: number) => i;
-
-  slides.forEach((slide, i) => {
-    slide.addEventListener("click", () => {
-      if (slide.classList.contains("active")) return;
-      loop.toIndex(mapClickIndex(i), { ease: "power3", duration: 0.725 });
-    });
-  });
-
-  nextBtns.forEach((btn) =>
-    btn.addEventListener("click", () =>
-      loop.next({ ease: "power3", duration: 0.725 })
-    )
-  );
-
-  prevBtns.forEach((btn) =>
-    btn.addEventListener("click", () =>
-      loop.previous({ ease: "power3", duration: 0.725 })
-    )
-  );
-
-  // Mouse drag for desktop - use slider section for full area
-  let dragCleanup: (() => void) | undefined;
-  const section = sliderSectionRef.current;
-  const wrap = list.parentElement;
-
-  if (
-    section &&
-    wrap &&
-    typeof window !== "undefined" &&
-    window.matchMedia("(min-width: 992px)").matches
-  ) {
-    let startX = 0;
-    let startProgress = 0;
-    let isDragging = false;
-
-    const onMouseDown = (e: MouseEvent) => {
-      e.preventDefault();
-      startX = e.clientX;
-      startProgress = loop.progress();
-      isDragging = true;
-      gsap.killTweensOf(loop);
-
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-
-      const dx = e.clientX - startX;
-      const totalWidth = section.offsetWidth;
-
-      if (totalWidth > 0) {
-        const delta = -dx / totalWidth;
-        let p = startProgress + delta;
-        p = Math.max(0, Math.min(1, p));
-
-        loop.progress(p);
-
-        const idx = loop.closestIndex();
-
-        if (currentEl !== slides[idx]) {
-          currentEl = slides[idx];
-          currentIndex = idx;
-          applyActive(currentEl, currentIndex, true);
-          setActiveProjectIndex(displayIndex(currentIndex));
+      if (allSteps.length) {
+        if (animateNumbers) {
+          gsap.to(allSteps, { y: `${-100 * index}%`, ease: "power3", duration: 0.45 });
+        } else {
+          gsap.set(allSteps, { y: `${-100 * index}%` });
         }
       }
-    };
+    }
 
-    const onMouseUp = () => {
-      isDragging = false;
+    const loop = horizontalLoop(slides, {
+      paused: true,
+      draggable: true,
+      center: true,
+      onChange: (element, index) => {
+        currentEl = element;
+        currentIndex = index;
+        applyActive(element, index, true);
+        setActiveProjectIndex(index);
+      },
+    });
 
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
+    slides.forEach((slide, i) => {
+      slide.addEventListener("click", () => {
+        if (slide.classList.contains("active")) return;
+        loop.toIndex(i, { ease: "power3", duration: 0.725 });
+      });
+    });
 
-      const idx = loop.closestIndex(true);
-      loop.toIndex(idx, { ease: "power3", duration: 0.4 });
-    };
+    nextButton?.addEventListener("click", () => loop.next({ ease: "power3", duration: 0.725 }));
+    prevButton?.addEventListener("click", () => loop.previous({ ease: "power3", duration: 0.725 }));
 
-    section.style.cursor = "grab";
-    section.addEventListener("mousedown", onMouseDown);
-
-    dragCleanup = () => {
-      section.style.cursor = "";
-      section.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }
-
-  return () => {
-    nextBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
-    prevBtns.forEach((btn) => btn.removeEventListener("click", () => {}));
-    dragCleanup?.();
-  };
-}, []);
+    if (!currentEl && slides[0]) {
+      currentEl = slides[0];
+      currentIndex = 0;
+      applyActive(slides[0], 0, false);
+      setActiveProjectIndex(0);
+    }
+  }, []);
 
 
 
@@ -543,10 +431,10 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Projects Section - Draggable Slider */}
+      {/* Projects Section - GSAP Slider (from template) */}
       <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8">
         <div ref={sliderSectionRef} className="slider__section">
-          <div className="slider__overlay hidden lg:flex">
+          <div className="slider__overlay">
             <div className="slider__overlay-inner">
               <div className="slider__overlay-header">
                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-1 uppercase">PROJECTS</h2>
@@ -554,15 +442,15 @@ useEffect(() => {
               </div>
               <div className="slider__overlay-count">
                 <div className="slider__count-col">
-                  <h2 data-slider-step className="slider__count-heading">01</h2>
+                  <h2 data-slide-count="step" className="slider__count-heading">01</h2>
                 </div>
                 <div className="slider__count-divider" />
                 <div className="slider__count-col">
-                  <h2 data-slider-total className="slider__count-heading">00</h2>
+                  <h2 data-slide-count="total" className="slider__count-heading">03</h2>
                 </div>
               </div>
               <div className="slider__overlay-nav">
-                <button type="button" aria-label="previous slide" data-slider-prev className="slider__btn">
+                <button type="button" aria-label="previous slide" data-slider-button="prev" className="slider__btn">
                   <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow">
                     <path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" />
                   </svg>
@@ -573,7 +461,7 @@ useEffect(() => {
                     <div className="slider__btn-overlay-corner bottom-right" />
                   </div>
                 </button>
-                <button type="button" aria-label="next slide" data-slider-next className="slider__btn">
+                <button type="button" aria-label="next slide" data-slider-button="next" className="slider__btn">
                   <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next">
                     <path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" />
                   </svg>
@@ -589,9 +477,9 @@ useEffect(() => {
           </div>
           <div className="slider__main">
             <div className="slider__wrap">
-              <div ref={sliderListRef} data-slider="list" className="slider__list">
+              <div data-slider="list" className="slider__list">
                 {projects.map((project, idx) => (
-                  <div key={project.id} data-slider-slide className={`slider__slide ${idx === 0 ? "active" : ""}`}>
+                  <div key={project.id} data-slider="slide" className={`slider__slide ${idx === 0 ? "active" : ""}`}>
                     <div className="slider__slide-inner">
                       <div className="block w-full h-full">
                         <div className="slide__img-wrap slide__img-placeholder">
@@ -611,27 +499,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <div className="mt-4 lg:mt-12 flex flex-col lg:flex-row gap-6 items-start max-w-6xl mx-auto">
-          <div className="lg:hidden mt-4 flex items-center gap-4">
-            <div className="slider__overlay-count flex items-center gap-2">
-              <div className="slider__count-col">
-                <h2 data-slider-step-mobile className="slider__count-heading text-2xl">01</h2>
-              </div>
-              <div className="slider__count-divider" />
-              <div className="slider__count-col">
-                <h2 data-slider-total-mobile className="slider__count-heading text-2xl">00</h2>
-              </div>
-            </div>
-            <div className="slider__overlay-nav flex gap-4">
-              <button type="button" aria-label="previous" data-slider-prev className="slider__btn w-12 h-12">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-              </button>
-              <button type="button" aria-label="next" data-slider-next className="slider__btn w-12 h-12 flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 17 12" fill="none" className="slider__btn-arrow next"><path d="M6.28871 12L7.53907 10.9111L3.48697 6.77778H16.5V5.22222H3.48697L7.53907 1.08889L6.28871 0L0.5 6L6.28871 12Z" fill="currentColor" /></svg>
-              </button>
-            </div>
-          </div>
-          {/* Project info - derecha en mobile */}
+        <div className="mt-4 lg:mt-12 max-w-6xl mx-auto">
           <div className="flex-1 min-w-0">
           <div
             key={activeProjectIndex}
