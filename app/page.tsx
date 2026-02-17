@@ -244,7 +244,7 @@ export default function Home() {
     });
   }, []);
 
-  // Looping words for skills
+  // Looping words for skills (template-based)
   useEffect(() => {
     const wordList = document.querySelector("[data-looping-words-list]");
     const edgeElement = document.querySelector("[data-looping-words-selector]");
@@ -271,14 +271,13 @@ export default function Home() {
       });
     };
 
-    const isMobile = () => window.innerWidth < 768;
     const moveWords = () => {
       currentIndex++;
 
       gsap.to(wordList, {
         yPercent: -wordHeight * currentIndex,
-        duration: isMobile() ? 1.4 : 1.2,
-        ease: isMobile() ? "power2.inOut" : "elastic.out(1, 0.85)",
+        duration: 1.2,
+        ease: "elastic.out(1, 0.85)",
         onStart: updateEdgeWidth,
         onComplete: () => {
           if (currentIndex >= totalWords - 3) {
@@ -294,7 +293,7 @@ export default function Home() {
     updateEdgeWidth();
 
     const tl = gsap.timeline({ repeat: -1, delay: 1 });
-    tl.call(moveWords).to({}, { duration: 2 }).repeat(-1);
+    tl.call(moveWords).to({}, { duration: 2 });
 
     return () => { tl.kill(); };
   }, []);
