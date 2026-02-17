@@ -391,7 +391,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative overflow-x-hidden font-sans" role="main">
+    <div className="min-h-screen bg-[#f5f5f5] text-[#0a0a0a] relative font-sans" role="main">
       {/* Nav - sticky at top, centered */}
       <div className="sticky top-0 z-50 pt-6 pb-2 px-4 flex justify-center">
         <div className="w-full max-w-[42rem] mx-4 transition-all duration-500 ease-out">

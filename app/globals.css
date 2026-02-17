@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f5f5;
-  --foreground: #0a0a0a;
-  --accent: #171717;
-  --muted: #737373;
-  --border: #e5e5e5;
+  --background: #050505;
+  --foreground: #ffffff;
+  --accent: #a855f7;
+  --muted: rgba(255,255,255,0.65);
+  --border: rgba(255,255,255,0.12);
 }
 
 @theme inline {
@@ -20,7 +20,7 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -29,6 +29,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
 
 .bg-gradient-radial {
