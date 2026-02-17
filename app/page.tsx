@@ -270,7 +270,7 @@ export default function Home() {
       });
     };
 
-    const isMobile = () => window.innerWidth < 768;
+    const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
     const moveWords = () => {
       currentIndex++;
 
@@ -703,7 +703,20 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      {/* Asterisk - right edge, scrolls with page, 400px lower */}
+      {/* Asterisk - left edge, mirrored, 20% bigger */}
+      <div className="asterisk-hover-zone asterisk-left absolute left-0 top-[calc(15vh+400px)] w-40 h-40 z-[25] select-none" aria-hidden>
+        <div
+          className="asterisk-left__char"
+          style={{
+            fontFamily: "var(--font-leckerli-one), cursive",
+            fontSize: "1440px",
+            lineHeight: 1,
+          }}
+        >
+          *
+        </div>
+      </div>
+      {/* Asterisk - right edge */}
       <div className="asterisk-hover-zone absolute right-0 top-[calc(15vh+400px)] w-32 h-32 z-[25] select-none" aria-hidden>
         <div
           className="asterisk-right"

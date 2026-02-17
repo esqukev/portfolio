@@ -455,6 +455,11 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
 }
 
+.asterisk-left:hover .asterisk-left__char {
+  opacity: 0.16;
+  transform: scaleX(-1) translate(calc(-50% + 4px), calc(-50% + 200px)) rotate(28deg) scale(1.06);
+}
+
 .asterisk-right {
   color: #000;
   opacity: 0.08;
@@ -463,6 +468,17 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   right: 0;
+  top: 0;
+}
+
+.asterisk-left .asterisk-left__char {
+  color: #000;
+  opacity: 0.08;
+  transform: scaleX(-1) translate(calc(-50% + 4px), calc(-50% + 200px)) rotate(22deg);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  left: 0;
   top: 0;
 }
 
@@ -532,9 +548,16 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   flex-shrink: 0;
 }
 
-/* Desktop: align overlay count + nav in one row */
+/* Desktop: count above arrows, grouped at bottom */
 .slider__overlay-inner {
   gap: 0;
+}
+
+@media screen and (min-width: 1024px) {
+  .slider__overlay-count {
+    margin-top: auto;
+    margin-bottom: 0.75em;
+  }
 }
 
 .slider__overlay-count,
@@ -874,18 +897,17 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills */
+/* Looping words - Skills (from template, adapted) */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: clamp(3rem, 8vw, 10em);
   font-weight: 700;
   line-height: 0.9;
   position: relative;
   color: #0a0a0a;
   width: 100%;
-  max-width: 100%;
 }
 
 .looping-words__list {
@@ -952,16 +974,12 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .looping-words__selector {
   pointer-events: none;
   width: 100%;
-  height: 0.85em;
+  height: 0.9em;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -62%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transform: translate(-50%, -50%);
 }
-
 
 .looping-words__containers {
   width: 100%;
@@ -1115,7 +1133,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   .looping-words__selector {
     height: 0.9em;
     top: 50%;
-    transform: translate(-50%, -62%);
+    transform: translate(-50%, -50%);
   }
 
   .looping-words__edge {
