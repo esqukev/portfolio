@@ -243,39 +243,59 @@ export default function Home() {
     });
   }, []);
 
-  // Looping words for skills (fix seamless + mobile)
+  // Looping words for skills
   useEffect(() => {
-    const wordList = document.querySelector("[data-looping-words-list]") as HTMLElement | null;
-    if (!wordList) return;
+    const wordList = document.querySelector("[data-looping-words-list]");
+    const edgeElement = document.querySelector("[data-looping-words-selector]");
+    if (!wordList || !edgeElement) return;
 
-    const items = Array.from(wordList.children) as HTMLElement[];
-    if (!items.length) return;
+    const words = Array.from(wordList.children);
+    const totalWords = words.length;
+    if (totalWords === 0) return;
 
-    // Duplicate list for seamless loop
-    items.forEach((item) => {
-      wordList.appendChild(item.cloneNode(true));
-    });
+    const wordHeight = 100 / totalWords;
+    let currentIndex = 0;
 
-    const total = items.length;
-    const duration = 1.1;
-    const delay = 1.2;
+    const updateEdgeWidth = () => {
+      const centerIndex = (currentIndex + 1) % totalWords;
+      const centerWord = words[centerIndex] as HTMLElement;
+      const centerWordWidth = centerWord.getBoundingClientRect().width;
+      const listWidth = (wordList as HTMLElement).getBoundingClientRect().width;
+      const percentageWidth = listWidth > 0 ? (centerWordWidth / listWidth) * 100 : 100;
 
-    gsap.set(wordList, { y: 0 });
-
-    const tl = gsap.timeline({ repeat: -1 });
-
-    for (let i = 1; i <= total; i++) {
-      tl.to(wordList, {
-        y: `-${i}em`,
-        duration,
-        ease: "power3.inOut",
-      }).to({}, { duration: delay });
-    }
-    tl.set(wordList, { y: 0 }); // reset seamless (clone = original)
-
-    return () => {
-      tl.kill();
+      gsap.to(edgeElement, {
+        width: `${percentageWidth}%`,
+        duration: 0.5,
+        ease: "expo.out",
+      });
     };
+
+    const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
+    const moveWords = () => {
+      currentIndex++;
+
+      gsap.to(wordList, {
+        yPercent: -wordHeight * currentIndex,
+        duration: isMobile() ? 1.4 : 1.2,
+        ease: isMobile() ? "power2.inOut" : "elastic.out(1, 0.85)",
+        onStart: updateEdgeWidth,
+        onComplete: () => {
+          if (currentIndex >= totalWords - 3) {
+            wordList.appendChild(wordList.children[0]);
+            currentIndex--;
+            gsap.set(wordList, { yPercent: -wordHeight * currentIndex });
+            words.push(words.shift()!);
+          }
+        },
+      });
+    };
+
+    updateEdgeWidth();
+
+    const tl = gsap.timeline({ repeat: -1, delay: 1 });
+    tl.call(moveWords).to({}, { duration: 2 }).repeat(-1);
+
+    return () => { tl.kill(); };
   }, []);
 
   // About text: fade-in + parallax on scroll
@@ -477,7 +497,7 @@ export default function Home() {
       {/* Skills Section - Looping words */}
       <section id="skills" className="py-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 text-center uppercase">SKILLS</h2>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0a0a0a] mb-4 text-center uppercase">SKILLS</h2>
           <p className="text-[#737373] text-sm uppercase tracking-widest mb-10 text-center">What I work with</p>
           <div className="looping-words">
             <div className="looping-words__containers">
@@ -696,8 +716,8 @@ export default function Home() {
           *
         </div>
       </div>
-      {/* Asterisk - right edge (bajado 300px, 250px a la izquierda) */}
-      <div className="asterisk-hover-zone absolute right-[250px] top-[calc(15vh+700px)] w-32 h-32 z-[25] select-none" aria-hidden>
+      {/* Asterisk - right edge */}
+      <div className="asterisk-hover-zone absolute right-0 top-[calc(15vh+400px)] w-32 h-32 z-[25] select-none" aria-hidden>
         <div
           className="asterisk-right"
           style={{
