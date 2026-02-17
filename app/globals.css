@@ -59,8 +59,8 @@ body {
 }
 
 .btn-animate-chars--outline:hover {
-  background-color: #0a0a0a;
-  color: #fff;
+  background-color: transparent;
+  color: #0a0a0a;
 }
 
 .btn-animate-chars__text {
@@ -98,10 +98,10 @@ body {
 }
 
 .btn-animate-chars--outline .btn-animate-chars__bg {
-  background-color: #f5f5f5;
+  background-color: transparent;
 }
 
-.btn-animate-chars:hover .btn-animate-chars__bg {
+.btn-animate-chars--filled:hover .btn-animate-chars__bg {
   inset: 0.125em;
 }
 
@@ -466,12 +466,18 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   top: 0;
 }
 
-/* Mobile Projects footer - count + arrows below slider, left (2 numbers only) */
+/* Mobile Projects footer - HIDDEN on desktop, only visible < 1024px */
 .slider__mobile-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1.5rem;
+  display: none;
+}
+
+@media screen and (max-width: 1023px) {
+  .slider__mobile-footer {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+  }
 }
 
 .slider__overlay-count--mobile {
@@ -950,7 +956,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -55%);
+  transform: translate(-50%, -62%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1109,7 +1115,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   .looping-words__selector {
     height: 0.9em;
     top: 50%;
-    transform: translate(-50%, -55%);
+    transform: translate(-50%, -62%);
   }
 
   .looping-words__edge {

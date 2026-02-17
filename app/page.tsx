@@ -182,14 +182,15 @@ export default function Home() {
       el.classList.add("active");
       activeElement = el;
 
-      const yVal = `${-100 * index}%`;
-      const targets: (Element | object)[] = [...allSteps];
-      if (mobileWrapper) targets.push(mobileWrapper);
+      const desktopY = `${-100 * index}%`;
+      const mobileY = `${-index}em`;
 
       if (animateNumbers) {
-        gsap.to(targets, { y: yVal, ease: "power3", duration: 0.45 });
+        if (allSteps.length) gsap.to(allSteps, { y: desktopY, ease: "power3", duration: 0.45 });
+        if (mobileWrapper) gsap.to(mobileWrapper, { y: mobileY, ease: "power3", duration: 0.45 });
       } else {
-        gsap.set(targets, { y: yVal });
+        if (allSteps.length) gsap.set(allSteps, { y: desktopY });
+        if (mobileWrapper) gsap.set(mobileWrapper, { y: mobileY });
       }
     }
 
@@ -269,13 +270,14 @@ export default function Home() {
       });
     };
 
+    const isMobile = () => window.innerWidth < 768;
     const moveWords = () => {
       currentIndex++;
 
       gsap.to(wordList, {
         yPercent: -wordHeight * currentIndex,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.85)",
+        duration: isMobile() ? 1.4 : 1.2,
+        ease: isMobile() ? "power2.inOut" : "elastic.out(1, 0.85)",
         onStart: updateEdgeWidth,
         onComplete: () => {
           if (currentIndex >= totalWords - 3) {
@@ -591,8 +593,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Mobile: count 01/03 + arrows BELOW slider, left-aligned (same logic as desktop, 2 numbers only) */}
-        <div className="slider__mobile-footer lg:hidden mt-6 flex items-center justify-start gap-6">
+        {/* Mobile: count 01/03 + arrows BELOW slider (hidden on desktop via CSS) */}
+        <div className="slider__mobile-footer mt-6">
           <div className="slider__overlay-count slider__overlay-count--mobile">
             <div className="slider__count-col">
               <h2 data-slide-count="step-mobile" className="slider__count-heading">01</h2>
