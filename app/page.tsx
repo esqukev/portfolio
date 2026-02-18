@@ -380,6 +380,7 @@ export default function Home() {
       image: "/blancbg.jpg",
       link: "",
       github: "",
+      comingSoon: true,
     },
   ];
 

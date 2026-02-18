@@ -658,6 +658,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .slide__img-placeholder-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background-color: rgba(245, 245, 245, 0.85);
 }
 
