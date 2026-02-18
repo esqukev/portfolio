@@ -220,6 +220,7 @@ export default function Home() {
       applyActive(slides[0], 0, false);
       setActiveProjectIndex(0);
     }
+    loop.toIndex(0, { duration: 0 });
   }, []);
 
 
@@ -371,6 +372,16 @@ export default function Home() {
       link: "",
       github: "https://github.com/esqukev/auction.git",
     },
+    {
+      id: 4,
+      title: "Upcoming project",
+      description: "More projects will display here",
+      technologies: ["More projects will display here"],
+      image: "",
+      link: "",
+      github: "",
+      comingSoon: true,
+    },
   ];
 
   const skills = [
@@ -403,7 +414,7 @@ export default function Home() {
             boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
           }}
         >
-          <div className="flex justify-center items-center h-14 px-6 gap-8">
+          <div className="nav-inner flex justify-center items-center h-14 px-6 gap-8">
             {["About", "Skills"].map((item) => (
               <a
                 key={item}
@@ -454,7 +465,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto relative z-10">
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.95] tracking-tight text-[#0a0a0a] animate-fade-in">
             Web{" "}
-            <span ref={wordRef} className="inline-block overflow-visible">
+            <span ref={wordRef} className="hero-rotating-word inline-block overflow-visible">
               {ROTATING_WORDS[wordIndex]}
             </span>
           </h1>
@@ -577,9 +588,15 @@ export default function Home() {
                     <div className="slider__slide-inner">
                       <div className="block w-full h-full">
                         <div className="slide__img-wrap slide__img-placeholder">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
-                          <span className="slide__img-fallback hidden">{project.title}</span>
+                          {project.image ? (
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
+                              <span className="slide__img-fallback hidden">{project.title}</span>
+                            </>
+                          ) : (
+                            <span className="slide__img-placeholder-text">More projects will display here</span>
+                          )}
                         </div>
                       </div>
                       <div className="slide__caption">

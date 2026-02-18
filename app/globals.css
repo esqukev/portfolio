@@ -82,8 +82,13 @@ body {
   transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
 }
 
-.btn-animate-chars:hover [data-button-animate-chars] span {
+.btn-animate-chars:hover [data-button-animate-chars] span,
+.btn-animate-chars:active [data-button-animate-chars] span {
   transform: translateY(-1.3em) rotate(0.001deg);
+}
+
+.btn-animate-chars:active .btn-animate-chars__bg {
+  inset: 0.125em;
 }
 
 .btn-animate-chars__bg {
@@ -101,7 +106,8 @@ body {
   background-color: transparent;
 }
 
-.btn-animate-chars--filled:hover .btn-animate-chars__bg {
+.btn-animate-chars--filled:hover .btn-animate-chars__bg,
+.btn-animate-chars--filled:active .btn-animate-chars__bg {
   inset: 0.125em;
 }
 
@@ -627,6 +633,21 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   display: none !important;
 }
 
+.slide__img-placeholder-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  color: #737373;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 1.5rem;
+  line-height: 1.4;
+}
+
 .slide__img {
   object-fit: cover;
   width: 100%;
@@ -1084,11 +1105,36 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
+/* Mobile: hero - reserve min-height so Developer/Designer vs Artist don't cause layout jump */
+@media screen and (max-width: 767px) {
+  .hero-rotating-word {
+    min-height: 1.9em;
+    display: inline-block;
+  }
+}
+
+/* Mobile: nav - reduce gap so tabs don't overflow margins */
+@media screen and (max-width: 767px) {
+  .nav-inner {
+    gap: 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Mobile: marquee strip - bigger text */
+@media screen and (max-width: 767px) {
+  .marquee-text {
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+  }
+}
+
 /* Mobile: skills looping words - selector stays 0.9em (matches line-height), brackets scale with text */
 @media screen and (max-width: 768px) {
   .looping-words {
     height: 2.7em;
-    font-size: clamp(2rem, 10vw, 4rem);
+    font-size: clamp(2.5rem, 12vw, 5rem);
   }
 
   .looping-words__containers {
