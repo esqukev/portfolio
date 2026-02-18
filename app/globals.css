@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #1b1b1b;
+  --background: #f5f5f5;
   --foreground: #0a0a0a;
-  --accent: #171717;
+  --accent: #ffffff;
   --muted: #737373;
   --border: #e5e5e5;
 }
@@ -28,13 +28,137 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Formas difuminadas: cubren todo el alto; Skills y Projects con fondo sólido para que no se vean formas detrás */
+.page-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-shapes__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+}
+
+.page-shapes__blob--1 {
+  top: 10%;
+  left: 0%;
+  width: 55vmax;
+  height: 55vmax;
+  opacity: 1;
+  background: radial-gradient(circle, rgba(233, 213, 255, 0.95) 0%, rgba(216, 180, 254, 0.55) 45%, transparent 70%);
+}
+
+/* Abajo esquina izquierda (Get in Touch): 300px a la izquierda, 100px abajo, opacidad +20% */
+.page-shapes__blob--4 {
+  bottom: -100px;
+  left: -450px;
+  width: calc(50vmax + 600px);
+  height: min(calc(50vmax + 600px), 1020px);
+  opacity: 1;
+  background: radial-gradient(circle at 50% 100%, rgba(216, 180, 254, 1) 0%, rgba(233, 213, 255, 0.82) 45%, transparent 70%);
+}
+
+/* Detrás de SKILLS sin colores ni formas: fondo sólido igual al page */
+#skills {
+  background-color: #f5f5f5;
+}
+
+/* Sin franja gris detrás de los cards: fondo blanco en toda la sección PROJECTS */
+#projects {
+  background-color: #ffffff;
+}
+
+/* ============================= */
+/* PREMIUM WHITE AURORA BACKGROUND */
+/* ============================= */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 15% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.16), transparent 55%),
+    radial-gradient(circle at 70% 85%, rgba(236, 72, 153, 0.14), transparent 60%),
+    radial-gradient(circle at 25% 90%, rgba(34, 197, 94, 0.08), transparent 55%),
+    linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%);
+  filter: blur(0px);
+}
+
+/* Soft studio spotlight overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.04), transparent 60%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.035), transparent 70%);
+  mix-blend-mode: multiply;
+}
+
+/* Subtle grain texture */
+@keyframes grainMove {
+  0%, 100% {
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(-1px, 1px);
+  }
+  50% {
+    transform: translate(1px, -1px);
+  }
+  75% {
+    transform: translate(-1px, -1px);
+  }
+}
+
+body .grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  animation: grainMove 6s steps(2) infinite;
+}
+
+/* Prevent weird section blocks */
+section {
+  background: transparent !important;
+}
+
+/* Optional utility for sections if needed */
+.clean-section-bg {
+  background: transparent !important;
 }
 
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
 
+/* ============================= */
 /* Button character stagger effect */
+/* ============================= */
+
 .btn-animate-chars {
   color: #0a0a0a;
   cursor: pointer;
@@ -249,28 +373,31 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #e5e5e5;
+  background: #f5f5f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #a3a3a3;
+  background: #cfcfcf;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #737373;
+  background: #a3a3a3;
 }
 
 /* Osmo style - clean cards */
 .osmo-card {
-  background: #fff;
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transition: all 0.25s ease;
 }
 
 .osmo-card:hover {
-  border-color: #a3a3a3;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 @keyframes marquee {
@@ -442,7 +569,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .text-draw__box {
-  color: rgba(232, 160, 160, 1); /* pastel red, full opacity (+40) */
+  color: rgba(232, 160, 160, 1);
   width: 100%;
   height: 0.625em;
   position: relative;
@@ -469,7 +596,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .asterisk-hover-zone:hover .asterisk-right {
-  opacity: 0.16;
+  opacity: 0.8;
+  color: rgb(210, 175, 250);
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
 }
 
@@ -478,7 +606,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   opacity: 0.08;
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-22deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.8s ease;
   position: absolute;
   right: 0;
   top: 0;
@@ -567,7 +696,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   min-height: 50vh;
   display: flex;
   position: relative;
-  background-color: #f5f5f5;
+  background-color: transparent;
 }
 
 .slider__main {
@@ -607,12 +736,12 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .slider__slide-inner {
-  border-radius: 0.5em;
+  border-radius: 0.75em;
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #171717;
+  background: #17171700;
 }
 
 .slide__img-wrap {
@@ -692,12 +821,12 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   z-index: 2;
   grid-column-gap: 0.4em;
   grid-row-gap: 0.4em;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #fff;
   white-space: nowrap;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 0.25em;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-radius: 0.4em;
   justify-content: flex-start;
   align-items: center;
   padding: 0.4em 0.75em 0.4em 0.5em;
@@ -764,8 +893,19 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 .slider__overlay {
   z-index: 2;
-  color: #0a0a0a;
-  background-image: linear-gradient(90deg, #f5f5f5 85%, transparent);
+  color: #3f3e3e;
+  /* Zona totalmente sólida detrás de PROJECTS; gradiente muy suave para que los cards se escondan de forma natural */
+  background: linear-gradient(
+    90deg,
+    #f5f5f5 0%,
+    #f5f5f5 32%,
+    rgba(245, 245, 245, 1) 42%,
+    rgba(245, 245, 245, 1) 52%,
+    rgba(245, 245, 245, 0.98) 62%,
+    rgba(245, 245, 245, 0.72) 72%,
+    rgba(245, 245, 245, 0.42) 84%,
+    transparent 100%
+  );
   justify-content: flex-start;
   align-items: center;
   width: 36vw;
@@ -834,9 +974,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 .slider__btn {
   color: #0a0a0a;
-  background-color: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.4em;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.55em;
   justify-content: center;
   align-items: center;
   width: 4em;
@@ -844,6 +984,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   padding: 0;
   display: flex;
   position: relative;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .slider__btn-arrow {
@@ -868,8 +1010,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 .slider__btn-overlay-corner {
-  border-top: 1px solid rgba(0, 0, 0, 0.3);
-  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+  border-left: 1px solid rgba(0, 0, 0, 0.25);
   border-top-left-radius: 0.4em;
   width: 1em;
   height: 1em;
@@ -933,7 +1075,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills (template-based, em units so brackets scale with text) */
+/* Looping words - Skills */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
@@ -1035,7 +1177,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   margin-bottom: 0.5rem;
 }
 
-/* Project info - floating text, same color as hero paragraph (#737373) */
+/* Project info - floating text */
 .project-info-floating {
   animation: projectInfoFade 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   color: var(--muted);
@@ -1105,7 +1247,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .slider__slide-inner {
-    border-radius: 0.5em;
+    border-radius: 0.75em;
   }
 
   .slide__img {
@@ -1127,26 +1269,29 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
     position: relative;
     inset: auto;
     padding-bottom: 2em;
-    background-image: linear-gradient(180deg, #f5f5f5 85%, transparent);
+    background: transparent;
+    background-image: none;
   }
+
   .slider__overlay-inner {
     grid-column-gap: 2em;
     grid-row-gap: 2em;
     height: auto;
   }
+
   .slider__overlay-count .slider__count-col {
     height: 1.5em;
   }
 }
 
-/* Mobile: hero - Web on line 1, Artist/Developer/Designer always on line 2 (no mix) */
+/* Mobile: hero - Web on line 1, Artist/Developer/Designer always on line 2 */
 @media screen and (max-width: 767px) {
   .hero-rotating-word {
     display: block;
   }
 }
 
-/* Mobile: nav - reduce gap so tabs don't overflow margins */
+/* Mobile: nav */
 @media screen and (max-width: 767px) {
   .nav-inner {
     gap: 0.75rem;
@@ -1155,7 +1300,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: marquee strip - bigger text */
+/* Mobile: marquee strip */
 @media screen and (max-width: 767px) {
   .marquee-text {
     font-size: 1rem;
@@ -1163,7 +1308,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: skills looping words - selector stays 0.9em (matches line-height), brackets scale with text */
+/* Mobile: skills looping words */
 @media screen and (max-width: 768px) {
   .looping-words__containers {
     min-width: 100%;
