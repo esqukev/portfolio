@@ -659,7 +659,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-color: rgba(245, 245, 245, 0.85);
+  background-color: rgba(245, 245, 245, 0.4);
 }
 
 .slide__img {
