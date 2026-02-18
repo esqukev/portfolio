@@ -587,7 +587,7 @@ export default function Home() {
                   <div key={project.id} data-slider="slide" className={`slider__slide ${idx === 0 ? "active" : ""}`}>
                     <div className="slider__slide-inner">
                       <div className="block w-full h-full">
-                        <div className="slide__img-wrap slide__img-placeholder">
+                        <div className={`slide__img-wrap slide__img-placeholder ${project.comingSoon ? "slide__img-wrap--coming-soon" : ""}`}>
                           {project.image ? (
                             <>
                               {/* eslint-disable-next-line @next/next/no-img-element */}
