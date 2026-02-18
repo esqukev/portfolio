@@ -35,6 +35,12 @@ body {
   background-attachment: fixed;
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
+
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
