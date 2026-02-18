@@ -29,6 +29,7 @@ const siteUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
 
 const ogDescription = "Creating bold modern and innovative web experiences.";
+const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/meta.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/meta.png",
+        url: ogImageUrl,
         width: 1200,
         height: 630,
         alt: "Kevin Bermudez StarDev Portfolio Preview",
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kevin Bermudez | StarDev | Portfolio",
     description: ogDescription,
-    images: ["/meta.png"],
+    images: [ogImageUrl],
   },
   robots: {
     index: true,
