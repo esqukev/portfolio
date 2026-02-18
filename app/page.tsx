@@ -377,7 +377,7 @@ export default function Home() {
       title: "Upcoming project",
       description: "More projects will display here",
       technologies: ["More projects will display here"],
-      image: "",
+      image: "/blancbg.png",
       link: "",
       github: "",
       comingSoon: true,
@@ -593,6 +593,9 @@ export default function Home() {
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={project.image} alt={project.title} className="slide__img" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }} />
                               <span className="slide__img-fallback hidden">{project.title}</span>
+                              {project.comingSoon && (
+                                <span className="slide__img-placeholder-text slide__img-placeholder-overlay">More projects will display here</span>
+                              )}
                             </>
                           ) : (
                             <span className="slide__img-placeholder-text">More projects will display here</span>

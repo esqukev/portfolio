@@ -456,6 +456,13 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   cursor: default;
 }
 
+@media screen and (max-width: 767px) {
+  .asterisk-hover-zone {
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
 .asterisk-hover-zone:hover .asterisk-right {
   opacity: 0.16;
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
@@ -646,6 +653,12 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   text-align: center;
   padding: 1.5rem;
   line-height: 1.4;
+}
+
+.slide__img-placeholder-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(245, 245, 245, 0.85);
 }
 
 .slide__img {
@@ -1105,11 +1118,10 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: hero - reserve min-height so Developer/Designer vs Artist don't cause layout jump */
+/* Mobile: hero - Web on line 1, Artist/Developer/Designer always on line 2 (no mix) */
 @media screen and (max-width: 767px) {
   .hero-rotating-word {
-    min-height: 1.9em;
-    display: inline-block;
+    display: block;
   }
 }
 
@@ -1132,11 +1144,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 /* Mobile: skills looping words - selector stays 0.9em (matches line-height), brackets scale with text */
 @media screen and (max-width: 768px) {
-  .looping-words {
-    height: 2.7em;
-    font-size: clamp(2.5rem, 12vw, 5rem);
-  }
-
   .looping-words__containers {
     min-width: 100%;
   }
