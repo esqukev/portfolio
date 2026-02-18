@@ -20,26 +20,10 @@
 }
 
 body {
-  margin: 0;
-  padding: 0;
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-
-  /* PRO BLACK BACKGROUND */
-  background: radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.22) 0%, transparent 55%),
-    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.16) 0%, transparent 60%),
-    radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.12) 0%, transparent 65%),
-    linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #050505 100%);
-
-  background-attachment: fixed;
 }
-
-html,
-body {
-  min-height: 100%;
-}
-
 
 .bg-gradient-radial {
   background: radial-gradient(circle, var(--tw-gradient-stops));
@@ -98,13 +82,8 @@ body {
   transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
 }
 
-.btn-animate-chars:hover [data-button-animate-chars] span,
-.btn-animate-chars:active [data-button-animate-chars] span {
+.btn-animate-chars:hover [data-button-animate-chars] span {
   transform: translateY(-1.3em) rotate(0.001deg);
-}
-
-.btn-animate-chars:active .btn-animate-chars__bg {
-  inset: 0.125em;
 }
 
 .btn-animate-chars__bg {
@@ -122,8 +101,7 @@ body {
   background-color: transparent;
 }
 
-.btn-animate-chars--filled:hover .btn-animate-chars__bg,
-.btn-animate-chars--filled:active .btn-animate-chars__bg {
+.btn-animate-chars--filled:hover .btn-animate-chars__bg {
   inset: 0.125em;
 }
 
@@ -274,7 +252,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 
 /* Osmo style - clean cards */
 .osmo-card {
-  background: #fff;
+  background: transparent;
   border: 1px solid var(--border);
   transition: all 0.25s ease;
 }
@@ -472,13 +450,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   cursor: default;
 }
 
-@media screen and (max-width: 767px) {
-  .asterisk-hover-zone {
-    pointer-events: none;
-    z-index: 0;
-  }
-}
-
 .asterisk-hover-zone:hover .asterisk-right {
   opacity: 0.16;
   transform: translate(calc(50% - 4px), calc(-50% + 200px)) rotate(-28deg) scale(1.06);
@@ -503,9 +474,9 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 @media screen and (max-width: 1023px) {
   .slider__mobile-footer {
     display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
   }
 }
 
@@ -643,23 +614,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   background: transparent;
 }
 
-.slide__img-fallback {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 1rem;
-}
-
-.slide__img-fallback.hidden {
-  display: none !important;
-}
-
 .slide__img-placeholder-text {
   display: flex;
   align-items: center;
@@ -667,7 +621,7 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   width: 100%;
   height: 100%;
   min-height: 200px;
-  color: #737373;
+  color: #6a6a6a;
   font-size: 0.95rem;
   font-weight: 500;
   text-align: center;
@@ -689,6 +643,23 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   text-align: center;
   padding: 1.5rem;
   pointer-events: none;
+}
+
+.slide__img-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 1rem;
+}
+
+.slide__img-fallback.hidden {
+  display: none !important;
 }
 
 .slide__img {
@@ -793,10 +764,6 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   align-items: flex-start;
   height: 28.125em;
   display: flex;
-}
-
-.slider__overlay .slider__overlay-count {
-  margin-top: auto;
 }
 
 .slider__overlay-count {
@@ -944,18 +911,18 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   transition-delay: 0.3s;
 }
 
-/* Looping words - Skills (template-based, em units so brackets scale with text) */
+/* Looping words - Skills */
 .looping-words {
   height: 2.7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  font-family: var(--font-geist-sans), Arial, sans-serif;
-  font-size: clamp(2.5rem, 6.5vw, 8rem);
+  font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 700;
   line-height: 0.9;
   position: relative;
   color: #0a0a0a;
   width: 100%;
+  max-width: 100%;
 }
 
 .looping-words__list {
@@ -964,9 +931,8 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   white-space: nowrap;
   flex-flow: column;
   align-items: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-left: 0;
+  margin: 0;
+  padding: 0;
   list-style: none;
   display: flex;
   position: relative;
@@ -981,10 +947,10 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .looping-words__fade {
   pointer-events: none;
   background-image: linear-gradient(
-    rgb(245, 245, 245) 5%,
+    #f5f5f5 5%,
     rgba(245, 245, 245, 0) 40%,
     rgba(245, 245, 245, 0) 60%,
-    rgb(245, 245, 245) 95%
+    #f5f5f5 95%
   );
   width: 100%;
   height: 100%;
@@ -1023,12 +989,16 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 .looping-words__selector {
   pointer-events: none;
   width: 100%;
-  height: 0.9em;
+  height: 0.85em;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -62%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .looping-words__containers {
   width: 100%;
@@ -1150,32 +1120,14 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 }
 
-/* Mobile: hero - Web on line 1, Artist/Developer/Designer always on line 2 (no mix) */
-@media screen and (max-width: 767px) {
-  .hero-rotating-word {
-    display: block;
-  }
-}
-
-/* Mobile: nav - reduce gap so tabs don't overflow margins */
-@media screen and (max-width: 767px) {
-  .nav-inner {
-    gap: 0.75rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-}
-
-/* Mobile: marquee strip - bigger text */
-@media screen and (max-width: 767px) {
-  .marquee-text {
-    font-size: 1rem;
-    letter-spacing: 0.25em;
-  }
-}
-
-/* Mobile: skills looping words - selector stays 0.9em (matches line-height), brackets scale with text */
+/* Mobile: skills looping words - larger container, [] aligns with text */
 @media screen and (max-width: 768px) {
+  .looping-words {
+    height: 3.5em;
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    max-width: 100%;
+  }
+
   .looping-words__containers {
     min-width: 100%;
   }
@@ -1191,8 +1143,23 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
   }
 
   .looping-words__p {
-    padding: 0 0.3em;
-    line-height: 0.9;
+    padding: 0 0.5rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .looping-words__selector {
+    height: 0.9em;
+    top: 50%;
+    transform: translate(-50%, -62%);
+  }
+
+  .looping-words__edge {
+    border-top-width: 0.05em;
+    border-left-width: 0.05em;
+    width: 0.2em;
+    height: 0.2em;
   }
 }
 
