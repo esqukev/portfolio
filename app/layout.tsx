@@ -28,19 +28,24 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
 
+const ogDescription =
+  "Innotive web solutions — full-stack development, modern web applications, and cutting-edge design. Let's build something great together.";
+const ogImageUrl = `${siteUrl}/opengraph-image`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Kevin Bermudez | StarDev | Portfolio",
-  description: "Innotive web solutions",
+  description: ogDescription,
   openGraph: {
     title: "Kevin Bermudez | StarDev | Portfolio",
-    description: "Innotive web solutions",
+    description: ogDescription,
     url: siteUrl,
-    siteName: "Star Dev",
+    siteName: "Kevin Bermudez | StarDev",
     type: "website",
+    locale: "en_US",
     images: [
       {
-        url: "/opengraph-image",
+        url: ogImageUrl,
         width: 1200,
         height: 630,
         alt: "Kevin Bermudez | StarDev | Portfolio - Innotive web solutions",
@@ -50,8 +55,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Kevin Bermudez | StarDev | Portfolio",
-    description: "Innotive web solutions",
-    images: ["/opengraph-image"],
+    description: ogDescription,
+    images: [ogImageUrl],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
