@@ -28,27 +28,26 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
 
-const ogDescription =
-  "Innotive web solutions — full-stack development, modern web applications, and cutting-edge design. Let's build something great together.";
-const ogImageUrl = `${siteUrl}/opengraph-image`;
+const ogDescription = "Creating bold modern and innovative web experiences.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Kevin Bermudez | StarDev | Portfolio",
   description: ogDescription,
+  authors: [{ name: "Kevin Bermudez" }],
   openGraph: {
     title: "Kevin Bermudez | StarDev | Portfolio",
     description: ogDescription,
     url: siteUrl,
-    siteName: "Kevin Bermudez | StarDev",
+    siteName: "Kevin Bermudez | StarDev Portfolio",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: ogImageUrl,
+        url: "/meta.png",
         width: 1200,
         height: 630,
-        alt: "Kevin Bermudez | StarDev | Portfolio - Innotive web solutions",
+        alt: "Kevin Bermudez StarDev Portfolio Preview",
       },
     ],
   },
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kevin Bermudez | StarDev | Portfolio",
     description: ogDescription,
-    images: [ogImageUrl],
+    images: ["/meta.png"],
   },
   robots: {
     index: true,
