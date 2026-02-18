@@ -377,10 +377,9 @@ export default function Home() {
       title: "Upcoming project",
       description: "More projects will display here",
       technologies: ["More projects will display here"],
-      image: "/blancbg.png",
+      image: "/blancbg.jpg",
       link: "",
       github: "",
-      comingSoon: true,
     },
   ];
 
