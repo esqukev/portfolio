@@ -403,6 +403,15 @@ export default function Home() {
       github: "",
       comingSoon: true,
     },
+    {
+      id: 5,
+      title: "New project",
+      description: "Description and link to be added.",
+      technologies: ["Tech stack to be added"],
+      image: "/blancbg.jpg",
+      link: "",
+      github: "",
+    },
   ];
 
   const skills = [
