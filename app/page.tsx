@@ -395,12 +395,13 @@ export default function Home() {
     },
     {
       id: 4,
-      title: "Arenal Vista Hotel",
-      description: "Mountain hotel site with a minimalist look and AI powered chatbot",
-      technologies: ["Radix UI", "Tailwind", "Lucide", "React 19", "TypeScript", "Vite", "AI chatbot (keyword-based FAQ)"],
-      image: "/hotel.png",
-      link: "https://arenalvistahotel.vercel.app/",
-      github: "https://github.com/esqukev/hotel",
+      title: "Upcoming project",
+      description: "More projects will display here",
+      technologies: ["More projects will display here"],
+      image: "/blancbg.jpg",
+      link: "",
+      github: "",
+      comingSoon: true,
     },
   ];
 
@@ -576,7 +577,7 @@ export default function Home() {
                 </div>
                 <div className="slider__count-divider" />
                 <div className="slider__count-col">
-                  <h2 data-slide-count="total" className="slider__count-heading">04</h2>
+                  <h2 data-slide-count="total" className="slider__count-heading">03</h2>
                 </div>
               </div>
               <div className="slider__overlay-nav">
@@ -646,7 +647,7 @@ export default function Home() {
             </div>
             <div className="slider__count-divider" />
             <div className="slider__count-col">
-              <h2 data-slide-count="total-mobile" className="slider__count-heading">04</h2>
+              <h2 data-slide-count="total-mobile" className="slider__count-heading">03</h2>
             </div>
           </div>
           <div className="slider__overlay-nav">
