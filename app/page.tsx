@@ -10,6 +10,17 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ROTATING_WORDS = ["Developer", "Designer", "Artist"];
 
+type Project = {
+  id: number;
+  title: string;
+  description: string;
+  technologies: string[];
+  image: string;
+  link: string;
+  github: string;
+  comingSoon?: boolean;
+};
+
 export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
@@ -365,7 +376,7 @@ export default function Home() {
     return () => anims.forEach((a) => a.kill());
   }, []);
 
-  const projects = [
+  const projects: Project[] = [
     {
       id: 1,
       title: "Artist Press Kit",
