@@ -395,13 +395,12 @@ export default function Home() {
     },
     {
       id: 4,
-      title: "Upcoming project",
-      description: "More projects will display here",
-      technologies: ["More projects will display here"],
-      image: "/blancbg.jpg",
-      link: "",
-      github: "",
-      comingSoon: true,
+      title: "Arenal Vista Hotel",
+      description: "Mountain hotel site with a minimalist look and AI powered chatbot",
+      technologies: ["Radix UI", "Tailwind", "Lucide", "React 19", "TypeScript", "Vite", "AI chatbot (keyword-based FAQ)"],
+      image: "/hotel.png",
+      link: "https://arenalvistahotel.vercel.app/",
+      github: "https://github.com/esqukev/hotel",
     },
   ];
 
