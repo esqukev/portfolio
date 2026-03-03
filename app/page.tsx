@@ -402,16 +402,6 @@ export default function Home() {
       link: "https://arenalvistahotel.vercel.app/",
       github: "https://github.com/esqukev/hotel",
     },
-    {
-      id: 5,
-      title: "Upcoming project",
-      description: "More projects will display here",
-      technologies: ["More projects will display here"],
-      image: "/blancbg.jpg",
-      link: "",
-      github: "",
-      comingSoon: true,
-    },
   ];
 
   const skills = [
@@ -586,7 +576,7 @@ export default function Home() {
                 </div>
                 <div className="slider__count-divider" />
                 <div className="slider__count-col">
-                  <h2 data-slide-count="total" className="slider__count-heading">05</h2>
+                  <h2 data-slide-count="total" className="slider__count-heading">04</h2>
                 </div>
               </div>
               <div className="slider__overlay-nav">
@@ -656,7 +646,7 @@ export default function Home() {
             </div>
             <div className="slider__count-divider" />
             <div className="slider__count-col">
-              <h2 data-slide-count="total-mobile" className="slider__count-heading">05</h2>
+              <h2 data-slide-count="total-mobile" className="slider__count-heading">04</h2>
             </div>
           </div>
           <div className="slider__overlay-nav">
