@@ -1064,11 +1064,31 @@ section[style*="z-index: 20"] > div > div:first-child h1 {
 }
 
 [data-slider="slide"] {
-  opacity: 0.35;
+  opacity: 0.5;
+  filter: blur(4px);
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+[data-slider="slide"] .slider__slide-inner {
+  position: relative;
+}
+
+[data-slider="slide"]:not(.active) .slider__slide-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 0.75em;
+  pointer-events: none;
 }
 
 [data-slider="slide"].active {
   opacity: 1;
+  filter: blur(0);
+}
+
+[data-slider="slide"].active .slider__slide-inner::after {
+  display: none;
 }
 
 [data-slider="slide"].active .slide__caption {
