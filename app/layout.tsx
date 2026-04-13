@@ -33,14 +33,14 @@ const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/meta.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Kevin Bermudez | StarDev | Portfolio",
+  title: "CLICKFLOWCR | PORTFOLIO",
   description: ogDescription,
   authors: [{ name: "Kevin Bermudez" }],
   openGraph: {
-    title: "Kevin Bermudez | StarDev | Portfolio",
+    title: "CLICKFLOWCR | PORTFOLIO",
     description: ogDescription,
     url: siteUrl,
-    siteName: "Kevin Bermudez | StarDev Portfolio",
+    siteName: "CLICKFLOWCR",
     type: "website",
     locale: "en_US",
     images: [
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
         url: ogImageUrl,
         width: 1200,
         height: 630,
-        alt: "Kevin Bermudez StarDev Portfolio Preview",
+        alt: "CLICKFLOWCR | PORTFOLIO",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kevin Bermudez | StarDev | Portfolio",
+    title: "CLICKFLOWCR | PORTFOLIO",
     description: ogDescription,
     images: [ogImageUrl],
   },
