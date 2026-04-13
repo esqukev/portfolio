@@ -29,7 +29,7 @@ const siteUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
 
 const ogDescription = "Creating bold modern and innovative web experiences.";
-const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/meta.png`;
+const ogImageUrl = `${siteUrl.replace(/\/$/, "")}/android-chrome-512x512.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImageUrl,
-        width: 1200,
-        height: 630,
+        width: 512,
+        height: 512,
         alt: "CLICKFLOWCR | PORTFOLIO",
       },
     ],
